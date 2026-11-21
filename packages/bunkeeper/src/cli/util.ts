@@ -1,3 +1,7 @@
+import { mkdtempSync, rmSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
+
 export const c = {
   reset: "\x1b[0m",
   bold: "\x1b[1m",
@@ -81,12 +85,22 @@ export function bunSupportsLint(version: BunVersion | null): boolean {
   return compareVersions(version, { ...version, major: 1, minor: 5, patch: 0 }) >= 0;
 }
 
-export function spawnBun(args: string[]) {
+export function spawnBun(args: string[], cwd?: string) {
   const bin = Bun.env.BUNKEEPER_BUN ?? "bun";
   return Bun.spawnSync([bin, ...args], {
+    cwd,
     stdout: "pipe",
     stderr: "pipe",
   });
+}
+
+export function probeLintSupport() {
+  const probeDir = mkdtempSync(join(tmpdir(), "bunkeeper-probe-"));
+  try {
+    return spawnBun(["lint", "--explain", "prefer-const"], probeDir);
+  } finally {
+    rmSync(probeDir, { recursive: true, force: true });
+  }
 }
 
 export function bunVersionString(): string {

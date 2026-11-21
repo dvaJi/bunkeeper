@@ -8,13 +8,14 @@ import {
   readTextIfExists,
   parseBunVersion,
   bunVersionString,
+  probeLintSupport,
   spawnBun,
 } from "./util.ts";
 
 type Check = { label: string; status: "ok" | "warn" | "fail" | "skip"; detail?: string };
 
 function lintSupported() {
-  const result = spawnBun(["lint", "--explain", "prefer-const"]);
+  const result = probeLintSupport();
   const stderr = result.stderr.toString();
   if (result.exitCode === 0) return { supported: true };
   if (stderr.includes("Script not found"))

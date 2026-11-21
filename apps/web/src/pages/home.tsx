@@ -1,4 +1,5 @@
 import { Link, Terminal, Table } from "../ui";
+import { Demo } from "../demo";
 
 export function Home() {
   return (
@@ -36,6 +37,8 @@ export function Home() {
           </a>
         </div>
       </section>
+
+      <Demo />
 
       <section className="features">
         <Feature

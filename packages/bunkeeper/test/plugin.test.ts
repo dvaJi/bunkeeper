@@ -1,5 +1,6 @@
 import { afterAll, beforeAll, describe, expect, setDefaultTimeout, test } from "bun:test";
 import { cpSync, mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
 import { join } from "node:path";
 
 const REPO = join(import.meta.dir, "..");
@@ -57,10 +58,18 @@ beforeAll(() => {
 });
 
 function lintSupported() {
-  return (
-    Bun.spawnSync([CANARY, "lint", "--explain", "prefer-const"], { stdout: "pipe", stderr: "pipe" })
-      .exitCode === 0
-  );
+  const probeDir = mkdtempSync(join(tmpdir(), "bunkeeper-probe-"));
+  try {
+    return (
+      Bun.spawnSync([CANARY, "lint", "--explain", "prefer-const"], {
+        cwd: probeDir,
+        stdout: "pipe",
+        stderr: "pipe",
+      }).exitCode === 0
+    );
+  } finally {
+    rmSync(probeDir, { recursive: true, force: true });
+  }
 }
 
 afterAll(() => {
