@@ -1,0 +1,20 @@
+{
+  "name": "@bunkeeper/web",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "bun build.ts --watch & bun server.ts",
+    "build": "bun build.ts",
+    "preview": "bun server.ts",
+    "deploy": "bun build.ts && alchemy deploy"
+  },
+  "dependencies": {
+    "react": "^19.2.1",
+    "react-dom": "^19.2.1"
+  },
+  "devDependencies": {
+    "@types/react": "^19.2.7",
+    "@types/react-dom": "^19.2.3",
+    "alchemy": "^0.94.0"
+  }
+}

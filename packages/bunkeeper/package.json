@@ -1,0 +1,55 @@
+{
+  "name": "bunkeeper",
+  "version": "0.1.0",
+  "description": "The zero-config lint and format preset for Bun. One command wires up bun lint, bun fmt and bun-native API rules.",
+  "type": "module",
+  "license": "MIT",
+  "author": "dvaJi",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dvaJi/bunkeeper.git"
+  },
+  "homepage": "https://github.com/dvaJi/bunkeeper#readme",
+  "bugs": "https://github.com/dvaJi/bunkeeper/issues",
+  "keywords": [
+    "bun",
+    "lint",
+    "linter",
+    "format",
+    "formatter",
+    "preset",
+    "config",
+    "cli",
+    "oxlint",
+    "agents",
+    "ai"
+  ],
+  "engines": {
+    "bun": ">=1.4.6-canary"
+  },
+  "bin": {
+    "bunkeeper": "./src/cli/bin.ts"
+  },
+  "exports": {
+    ".": "./plugin/index.js",
+    "./plugin": "./plugin/index.js",
+    "./configs/recommended": "./configs/recommended.json",
+    "./configs/strict": "./configs/strict.json"
+  },
+  "files": [
+    "configs",
+    "plugin",
+    "src",
+    "templates",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "test": "bun test",
+    "lint": "bun lint --no-script",
+    "lint:fix": "bun lint --fix --no-script",
+    "fmt": "bun fmt",
+    "fmt:check": "bun fmt --check",
+    "check": "bun fmt --check && bun lint --no-script"
+  }
+}

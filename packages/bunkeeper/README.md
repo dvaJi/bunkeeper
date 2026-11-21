@@ -4,6 +4,8 @@
 
 One command wires up `bun lint`, `bun fmt` and a set of bun-native API rules — no ESLint, no Prettier, no oxlint, no Biome, no config to learn. Bun itself is the toolchain; bunkeeper just makes it strict.
 
+**Docs: [bunkeeper.aipurrjects.xyz](https://bunkeeper.aipurrjects.xyz)**
+
 ```sh
 bunx bunkeeper init
 ```
@@ -137,6 +139,13 @@ Or go strict: `configs/strict.json` extends recommended with `pedantic` and `res
 2. **Opinionated, but honest.** Defaults catch real bugs and bun-unidiomatic code; everything is overridable in files you already own.
 3. **Agents are first-class users.** Every rule message says what to do instead, CI fails loudly, and `AGENTS.md` keeps models in the loop.
 4. **Re-runnable.** `init` is idempotent: marked blocks are replaced, never duplicated; your files are merged, never clobbered.
+
+## Repository layout
+
+```
+packages/bunkeeper/   the npm package: preset configs, custom-rule plugin, CLI
+apps/web/             docs site (React + Bun.build, deployed to bunkeeper.aipurrjects.xyz via Alchemy)
+```
 
 ## Contributing
 

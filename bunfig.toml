@@ -2,7 +2,7 @@
 printWidth = 100
 
 [lint]
-plugins = ["./plugin/index.js"]
+plugins = ["./packages/bunkeeper/plugin/index.js"]
 
 [lint.rules]
 "bunkeeper/no-dotenv" = "error"
