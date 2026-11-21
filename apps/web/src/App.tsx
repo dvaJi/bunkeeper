@@ -4,6 +4,7 @@ import { Home } from "./pages/home";
 import { GettingStarted } from "./pages/getting-started";
 import { Presets } from "./pages/presets";
 import { Rules } from "./pages/rules";
+import { Agents } from "./pages/agents";
 import { CliPage } from "./pages/cli";
 
 const ROUTES: Record<string, () => React.JSX.Element> = {
@@ -11,6 +12,7 @@ const ROUTES: Record<string, () => React.JSX.Element> = {
   "/docs/getting-started": GettingStarted,
   "/docs/presets": Presets,
   "/docs/rules": Rules,
+  "/docs/agents": Agents,
   "/docs/cli": CliPage,
 };
 

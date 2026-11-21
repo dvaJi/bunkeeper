@@ -46,12 +46,13 @@ That's what bunkeeper does. It is [Ultracite](https://github.com/haydenbleasel/u
 
 ### init flags
 
-| Flag             | Description                                                           |
-| ---------------- | --------------------------------------------------------------------- |
-| `--yes`, `-y`    | Defaults, no prompts                                                  |
-| `--strict`       | Extend `configs/strict.json` (adds pedantic + restriction categories) |
-| `--type-aware`   | Turn on `bun lint` type-aware rules (slower, catches more)            |
-| `--skip-install` | Configure without running `bun add`                                   |
+| Flag                     | Description                                                                                                                                          |
+| ------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `--yes`, `-y`            | Defaults, no prompts                                                                                                                                 |
+| `--strict`               | Extend `configs/strict.json` (adds pedantic + restriction categories)                                                                                |
+| `--type-aware`           | Turn on `bun lint` type-aware rules (slower, catches more)                                                                                           |
+| `--js-plugins landmines` | Add [landmines](https://github.com/interfere-inc/landmines) agent-honesty rules — see [Agent rules](https://bunkeeper.aipurrjects.xyz/#/docs/agents) |
+| `--skip-install`         | Configure without running `bun add`                                                                                                                  |
 
 ## What init sets up
 

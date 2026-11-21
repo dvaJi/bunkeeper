@@ -62,7 +62,7 @@ describe("bunkeeper init", () => {
     const bunfig = await Bun.file(join(fixture, "bunfig.toml")).text();
     expect(bunfig.split("# bunkeeper:start").length - 1).toBe(1);
     const output = result.stdout.toString() + result.stderr.toString();
-    expect(output).toContain("already extends bunkeeper");
+    expect(output).toContain("presets already wired in .oxlintrc.json");
   });
 
   test("init --type-aware writes typeAware", async () => {
@@ -72,6 +72,31 @@ describe("bunkeeper init", () => {
     );
     expect(result.exitCode).toBe(0);
     expect(await Bun.file(join(fixture, "bunfig.toml")).text()).toContain("typeAware = true");
+  });
+
+  test("init --js-plugins landmines extends the landmines config", async () => {
+    const result = bun(
+      [join(REPO, "src", "cli", "bin.ts"), "init", "--skip-install", "--js-plugins", "landmines"],
+      fixture,
+    );
+    expect(result.exitCode).toBe(0);
+    const oxlint = JSON.parse(await Bun.file(join(fixture, ".oxlintrc.json")).text());
+    expect(oxlint.extends).toContain(
+      "./node_modules/@interfere/landmines/configs/recommended.json",
+    );
+    expect(
+      oxlint.extends.filter((entry: string) => entry.includes("bunkeeper/configs/")).length,
+    ).toBe(1);
+  });
+
+  test("init --js-plugins with an unknown plugin warns but keeps wiring the rest", async () => {
+    const result = bun(
+      [join(REPO, "src", "cli", "bin.ts"), "init", "--skip-install", "--js-plugins", "nope"],
+      fixture,
+    );
+    expect(result.exitCode).toBe(0);
+    const output = result.stdout.toString() + result.stderr.toString();
+    expect(output).toContain('unknown js plugin "nope"');
   });
 
   test("doctor runs against the wired project", () => {

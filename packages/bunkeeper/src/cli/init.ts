@@ -22,6 +22,15 @@ type InitOptions = {
   strict: boolean;
   typeAware: boolean;
   skipInstall: boolean;
+  jsPlugins: string[];
+};
+
+const PRESET_CONFIG_PATHS: Record<string, string> = {
+  landmines: "./node_modules/@interfere/landmines/configs/recommended.json",
+};
+
+const PLUGIN_PACKAGES: Record<string, string> = {
+  landmines: "@interfere/landmines",
 };
 
 function presetConfigPath(strict: boolean) {
@@ -54,41 +63,61 @@ function bunkeeperBlock(options: InitOptions) {
     .join("\n");
 }
 
-function hasBunkeeperExtend(config: Record<string, any> | null) {
-  const extendsList = Array.isArray(config?.extends)
-    ? config.extends
-    : config?.extends
-      ? [config.extends]
-      : [];
-  return extendsList.some(
-    (entry: string) => typeof entry === "string" && entry.includes(`${PRESET_PACKAGE}/configs/`),
-  );
+function extendsListOf(config: Record<string, any> | null): string[] {
+  if (!config) return [];
+  if (Array.isArray(config.extends))
+    return config.extends.filter((entry): entry is string => typeof entry === "string");
+  return typeof config.extends === "string" ? [config.extends] : [];
 }
 
 async function writeOxlintConfig(options: InitOptions) {
   const existing = await readJsonIfExists<
     Record<string, any> & { extends?: unknown; rules?: unknown }
   >(".oxlintrc.json");
-  if (existing && hasBunkeeperExtend(existing)) {
-    warn(".oxlintrc.json already extends bunkeeper, leaving it as is");
+  const current = extendsListOf(existing);
+  const pluginPaths = options.jsPlugins
+    .map((name) => PRESET_CONFIG_PATHS[name])
+    .filter((entry): entry is string => Boolean(entry));
+  const wanted = [presetConfigPath(options.strict), ...pluginPaths];
+  const missing = wanted.filter((entry) => !current.includes(entry));
+
+  if (existing === null) {
+    await Bun.write(".oxlintrc.json", `${JSON.stringify({ extends: wanted }, null, 2)}\n`);
+    ok("created .oxlintrc.json extending the bunkeeper preset");
     return;
   }
-  if (existing) {
-    const currentExtends = Array.isArray(existing.extends)
-      ? existing.extends
-      : existing.extends
-        ? [existing.extends]
-        : [];
-    const next = { ...existing, extends: [presetConfigPath(options.strict), ...currentExtends] };
-    await Bun.write(".oxlintrc.json", `${JSON.stringify(next, null, 2)}\n`);
-    ok("merged bunkeeper preset into existing .oxlintrc.json");
+  if (missing.length === 0) {
+    info("presets already wired in .oxlintrc.json");
     return;
   }
-  await Bun.write(
-    ".oxlintrc.json",
-    `${JSON.stringify({ extends: [presetConfigPath(options.strict)] }, null, 2)}\n`,
-  );
-  ok("created .oxlintrc.json extending the bunkeeper preset");
+  const next = { ...existing, extends: [...missing, ...current] };
+  await Bun.write(".oxlintrc.json", `${JSON.stringify(next, null, 2)}\n`);
+  ok("merged presets into existing .oxlintrc.json");
+}
+
+function warnUnknownJsPlugins(options: InitOptions) {
+  for (const name of options.jsPlugins) {
+    if (!PRESET_CONFIG_PATHS[name]) {
+      warn(
+        `unknown js plugin "${name}" — supported: ${Object.keys(PRESET_CONFIG_PATHS).join(", ")}`,
+      );
+    }
+  }
+}
+
+async function installJsPlugins(options: InitOptions) {
+  for (const name of options.jsPlugins) {
+    const pkg = PLUGIN_PACKAGES[name];
+    if (!pkg) continue;
+    const result = spawnBun(["add", "-d", pkg]);
+    if (result.exitCode === 0) {
+      ok(`installed ${pkg}`);
+    } else {
+      warn(
+        `bun add -d ${pkg} failed (${result.stderr.toString().split("\n")[0]}), add it manually`,
+      );
+    }
+  }
 }
 
 function hasLintOrFmtSection(bunfig: string) {
@@ -231,7 +260,11 @@ export async function init(options: InitOptions) {
   }
   console.log(`${c.bold}bunkeeper init${c.reset}\n`);
   await checkBunVersion();
-  if (!options.skipInstall) await installSelf();
+  warnUnknownJsPlugins(options);
+  if (!options.skipInstall) {
+    await installSelf();
+    await installJsPlugins(options);
+  }
   await writeOxlintConfig(options);
   await writeBunfig(options);
   await writePackageJsonScripts();

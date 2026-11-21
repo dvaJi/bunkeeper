@@ -107,31 +107,21 @@ export function Presets() {
         closes on the same signal a human sees.
       </p>
       <p>
-        Want to stack more agent-behaviour rules? bunkeeper plays fine with oxlint JS plugins loaded
-        next to it in your
-        <Code>.oxlintrc.json</Code> — for example the AI-honesty rules from{" "}
+        To stack full agent-behaviour rulesets on top —{" "}
         <a href="https://github.com/interfere-inc/landmines" target="_blank" rel="noreferrer">
-          @interfere/landmines
+          landmines
         </a>{" "}
-        (no test doubles, no fixed sleeps in tests, no flake masking) or{" "}
+        for test honesty (no test doubles, no fixed sleeps, no flake masking) and{" "}
         <a href="https://github.com/dmmulroy/anti-slop" target="_blank" rel="noreferrer">
           anti-slop
         </a>{" "}
-        for type-level slop:
+        for type honesty — see <Link to="/docs/agents">Agent rules</Link>. The short version:
+        <Code>init --js-plugins landmines</Code> wires landmines into your existing config.
       </p>
-      <CodeBlock title=".oxlintrc.json">{`{
-  "extends": ["./node_modules/bunkeeper/configs/recommended.json"],
-  "jsPlugins": [
-    { "name": "landmines-testing", "specifier": "@interfere/landmines/testing" }
-  ],
-  "rules": {
-    "landmines-testing/no-test-doubles": "error"
-  }
-}`}</CodeBlock>
       <Callout>
-        Plugins are loaded once under a name. Load them either here or in <Code>bunfig.toml</Code>,
-        not both. bunkeeper's own plugin already loads through <Code>bunfig.toml</Code> — leave that
-        one alone.
+        Plugins are loaded once under a name. Load them either in <Code>.oxlintrc.json</Code> or in{" "}
+        <Code>bunfig.toml</Code>, not both. bunkeeper's own plugin already loads through{" "}
+        <Code>bunfig.toml</Code> — leave that one alone.
       </Callout>
     </DocsPage>
   );

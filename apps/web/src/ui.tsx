@@ -100,6 +100,7 @@ const NAV = [
   { to: "/docs/getting-started", label: "Getting started" },
   { to: "/docs/presets", label: "Presets" },
   { to: "/docs/rules", label: "Rules" },
+  { to: "/docs/agents", label: "Agent rules" },
   { to: "/docs/cli", label: "CLI" },
 ];
 

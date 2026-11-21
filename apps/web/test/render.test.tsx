@@ -5,6 +5,7 @@ import { Demo } from "../src/demo";
 import { GettingStarted } from "../src/pages/getting-started";
 import { Presets } from "../src/pages/presets";
 import { Rules } from "../src/pages/rules";
+import { Agents } from "../src/pages/agents";
 import { CliPage } from "../src/pages/cli";
 import { Home } from "../src/pages/home";
 
@@ -13,6 +14,7 @@ const PAGES: Record<string, () => React.JSX.Element> = {
   "/docs/getting-started": GettingStarted,
   "/docs/presets": Presets,
   "/docs/rules": Rules,
+  "/docs/agents": Agents,
   "/docs/cli": CliPage,
 };
 
