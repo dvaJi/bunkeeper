@@ -1,22 +1,24 @@
 import alchemy from "alchemy";
-import { Worker } from "alchemy/cloudflare";
+import { Assets, Worker } from "alchemy/cloudflare";
 
 const app = await alchemy("bunkeeper");
 
-const indexHtml = await Bun.file("./dist/index.html").text();
+const assets = await Assets({
+  path: "./dist",
+});
 
 export const docs = await Worker("bunkeeper-docs", {
   name: "bunkeeper-docs",
+  bindings: {
+    ASSETS: assets,
+  },
   assets: {
-    directory: "./dist",
     html_handling: "auto-trailing-slash",
-    not_found_handling: "none",
+    not_found_handling: "single-page-application",
   },
   script: `export default {
-    async fetch() {
-      return new Response(${JSON.stringify(indexHtml)}, {
-        headers: { "content-type": "text/html; charset=utf-8" },
-      });
+    async fetch(request, env) {
+      return env.ASSETS.fetch(request);
     },
   };`,
   domains: [Bun.env.DOCS_DOMAIN ?? "bunkeeper.aipurrjects.xyz"],
