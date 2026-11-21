@@ -1,0 +1,13 @@
+[fmt]
+printWidth = 100
+
+[lint]
+plugins = ["./plugin/index.js"]
+
+[lint.rules]
+"bunkeeper/no-dotenv" = "error"
+"bunkeeper/no-process-env" = "warn"
+"bunkeeper/prefer-bun-file" = "warn"
+"bunkeeper/prefer-bun-write" = "warn"
+"bunkeeper/no-node-fetch" = "warn"
+"bunkeeper/prefer-bun-sleep" = "warn"

@@ -1,0 +1,25 @@
+{
+  "$schema": "https://bun.com/schema/oxlintrc.json",
+  "categories": {
+    "correctness": "error",
+    "suspicious": "error",
+    "perf": "warn"
+  },
+  "rules": {
+    "eqeqeq": ["error", "smart"],
+    "no-alert": "error",
+    "no-debugger": "error",
+    "@typescript-eslint/consistent-type-imports": "warn",
+    "@typescript-eslint/consistent-type-definitions": "off",
+    "@typescript-eslint/no-unused-vars": [
+      "error",
+      {
+        "argsIgnorePattern": "^_",
+        "varsIgnorePattern": "^_"
+      }
+    ],
+    "unicorn/no-null": "off",
+    "unicorn/no-await-expression-member": "off",
+    "unicorn/prefer-top-level-await": "warn"
+  }
+}

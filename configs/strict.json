@@ -1,0 +1,19 @@
+{
+  "$schema": "https://bun.com/schema/oxlintrc.json",
+  "extends": ["./recommended.json"],
+  "categories": {
+    "style": "warn",
+    "pedantic": "warn",
+    "restriction": "warn"
+  },
+  "rules": {
+    "no-console": ["warn", { "allow": ["warn", "error"] }],
+    "no-magic-numbers": "off",
+    "one-var": "off",
+    "sort-imports": "off",
+    "sort-keys": "off",
+    "unicorn/no-null": "error",
+    "unicorn/prefer-node-protocol": "error",
+    "unicorn/filename-case": ["warn", { "cases": { "kebabCase": true, "pascalCase": true } }]
+  }
+}
