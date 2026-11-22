@@ -1,10 +1,5 @@
 import type { ReactNode } from "react";
-import {
-  highlight,
-  inferLanguage,
-  lineDecorations,
-  type LineSelection,
-} from "./highlight";
+import { highlight, inferLanguage, lineDecorations, type LineSelection } from "./highlight";
 
 export function Link({
   to,
