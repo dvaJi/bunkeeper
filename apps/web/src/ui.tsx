@@ -1,5 +1,12 @@
-import type { ReactNode } from "react";
+import { useState, type ReactNode } from "react";
 import { highlight, inferLanguage, lineDecorations, type LineSelection } from "./highlight";
+import { Button } from "./components/forme/button/button";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "./components/forme/tooltip/tooltip";
 
 export function Link({
   to,
@@ -19,6 +26,32 @@ export function Link({
 
 export function Code({ children }: { children: ReactNode }) {
   return <code className="inline-code">{children}</code>;
+}
+
+function CopyButton({ text }: { text: string }) {
+  const [copied, setCopied] = useState(false);
+
+  return (
+    <TooltipProvider>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <Button
+            variant="ghost"
+            size="xs"
+            aria-label="Copy code"
+            onClick={async () => {
+              await navigator.clipboard.writeText(text);
+              setCopied(true);
+              setTimeout(() => setCopied(false), 1500);
+            }}
+          >
+            {copied ? "copied ✓" : "copy"}
+          </Button>
+        </TooltipTrigger>
+        <TooltipContent>{copied ? "Copied to clipboard" : "Copy to clipboard"}</TooltipContent>
+      </Tooltip>
+    </TooltipProvider>
+  );
 }
 
 type Annotation = { range: [number, number]; message?: string };
@@ -45,6 +78,7 @@ export function CodeBlock({
   ranges?: Annotation[];
 }) {
   const lang = inferLanguage(title);
+  const code = children.trim();
   const decorations = [
     ...lineDecorations(highlightLines ?? [], "th-line--highlighted"),
     ...lineDecorations(ins ?? [], "th-line--inserted"),
@@ -59,12 +93,15 @@ export function CodeBlock({
   ];
   return (
     <div className="code-block">
-      {title ? <div className="code-title">{title}</div> : null}
+      <div className="code-bar">
+        {title ? <div className="code-title">{title}</div> : <span />}
+        <CopyButton text={code} />
+      </div>
       <div
         className="code-body"
         dangerouslySetInnerHTML={{
           __html: highlight(
-            children.trim(),
+            code,
             lang,
             decorations.length > 0 ? decorations : undefined,
             lineNumbers,
@@ -83,9 +120,12 @@ export function Terminal({ children }: { children: string }) {
         <span className="dot" />
         <span className="dot" />
         <span className="terminal-label">terminal</span>
+        <span className="terminal-copy">
+          <CopyButton text={children.trim()} />
+        </span>
       </div>
       <pre>
-        <code dangerouslySetInnerHTML={{ __html: highlight(children.trim(), "bash") }} />
+        <code dangerouslySetInnerHTML={{ __html: highlight(children.trim(), "shell") }} />
       </pre>
     </div>
   );

@@ -1,4 +1,6 @@
 import { DocsPage, CodeBlock, Callout, Code, Link } from "../ui";
+import { Badge } from "../components/forme/badge/badge";
+import { Card, CardContent, CardDescription, CardHeader } from "../components/forme/card/card";
 
 type WrongMark = { find: string; occurrence?: number; message: string };
 
@@ -110,24 +112,30 @@ export function Rules() {
           })
           .filter((entry): entry is NonNullable<typeof entry> => entry !== null);
         return (
-          <div className="rule-card" key={rule.id}>
-            <div className="rule-head">
-              <code className="rule-id">{rule.id}</code>
-              <span className={`badge ${rule.level}`}>{rule.level}</span>
-            </div>
-            <p>{rule.why}</p>
-            <div className="compare">
-              <CodeBlock title="wrong" ranges={ranges}>
-                {rule.wrong}
-              </CodeBlock>
-              <CodeBlock title="right" ins={[1]}>
-                {rule.right}
-              </CodeBlock>
-            </div>
-            <a className="dim small" href={rule.doc} target="_blank" rel="noreferrer">
-              Full documentation ↗
-            </a>
-          </div>
+          <Card key={rule.id} className="rule-card">
+            <CardHeader>
+              <div className="rule-head">
+                <code className="rule-id">{rule.id}</code>
+                <Badge variant={rule.level === "error" ? "destructive" : "warning"}>
+                  {rule.level}
+                </Badge>
+              </div>
+              <CardDescription>{rule.why}</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="compare">
+                <CodeBlock title="wrong" ranges={ranges}>
+                  {rule.wrong}
+                </CodeBlock>
+                <CodeBlock title="right" ins={[1]}>
+                  {rule.right}
+                </CodeBlock>
+              </div>
+              <a className="dim small" href={rule.doc} target="_blank" rel="noreferrer">
+                Full documentation ↗
+              </a>
+            </CardContent>
+          </Card>
         );
       })}
 

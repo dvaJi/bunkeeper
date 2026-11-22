@@ -11,6 +11,9 @@
     "no-debugger": "error",
     "@typescript-eslint/consistent-type-imports": "warn",
     "@typescript-eslint/consistent-type-definitions": "off",
+    "no-underscore-dangle": "off",
+    "unicorn/consistent-function-scoping": "off",
+    "no-underscore-dangle": "off",
     "@typescript-eslint/no-unused-vars": [
       "error",
       {

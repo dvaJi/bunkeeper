@@ -9,13 +9,20 @@
     "deploy": "bun build.ts && alchemy deploy"
   },
   "dependencies": {
+    "@base-ui/react": "^1.9.0",
     "@tanstack/highlight": "^1.2.12",
+    "clsx": "^2.1.1",
+    "cmdk": "^1.1.1",
+    "motion": "^14.14.0",
     "react": "^19.2.1",
-    "react-dom": "^19.2.1"
+    "react-dom": "^19.2.1",
+    "tailwind-merge": "^3.7.1"
   },
   "devDependencies": {
+    "@tailwindcss/cli": "^4.3.5",
     "@types/react": "^19.2.7",
     "@types/react-dom": "^19.2.3",
-    "alchemy": "^0.94.0"
+    "alchemy": "^0.94.0",
+    "tailwindcss": "^4.3.5"
   }
 }

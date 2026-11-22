@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import { highlightLine } from "./highlight";
+import { SegmentedControl } from "./components/forme/segmented-control/segmented-control";
+import { Button } from "./components/forme/button/button";
 
 type CodeLine = { text: string; kind?: "bad" | "good" };
 
@@ -197,44 +199,36 @@ export function Demo() {
           </p>
         </div>
         <div className="demo-controls">
-          <div className="seg" role="tablist">
-            <button
-              type="button"
-              className={`seg-btn${phase === "before" ? " active" : ""}`}
-              onClick={() => setManualPhase("before")}
-            >
-              without
-            </button>
-            <button
-              type="button"
-              className={`seg-btn${phase === "after" ? " active" : ""}`}
-              onClick={() => setManualPhase("after")}
-            >
-              with bunkeeper
-            </button>
-          </div>
-          <button
-            type="button"
-            className={`auto-btn${auto ? " on" : ""}`}
-            onClick={() => setAuto((current) => !current)}
+          <SegmentedControl
+            label="Code state"
+            size="sm"
+            value={phase}
+            onValueChange={(value) => setManualPhase(value as "before" | "after")}
+            options={[
+              { value: "before", label: "without" },
+              { value: "after", label: "with bunkeeper" },
+            ]}
+          />
+          <Button
+            variant="ghost"
+            size="xs"
+            aria-pressed={auto}
             title={auto ? "pause the loop" : "resume the loop"}
+            onClick={() => setAuto((current) => !current)}
           >
             {auto ? "⏸ auto" : "▶ auto"}
-          </button>
+          </Button>
         </div>
       </div>
 
       <div className="demo-chips">
-        {EXAMPLES.map((item, i) => (
-          <button
-            key={item.id}
-            type="button"
-            className={`chip${i === index ? " active" : ""}`}
-            onClick={() => pick(i)}
-          >
-            {item.chip}
-          </button>
-        ))}
+        <SegmentedControl
+          label="Rule example"
+          size="sm"
+          value={EXAMPLES[index].id}
+          onValueChange={(value) => pick(EXAMPLES.findIndex((item) => item.id === value))}
+          options={EXAMPLES.map((item) => ({ value: item.id, label: item.chip }))}
+        />
       </div>
 
       {auto ? (

@@ -1,0 +1,1138 @@
+/**
+ * Forme foundation.
+ *
+ * Install this file once, then import it after Tailwind in your global stylesheet:
+ *
+ *   @import "tailwindcss";
+ *   @import "./components/forme/foundation.css";
+ *
+ * Every Forme component reads these tokens and nothing else, so retheming the
+ * whole library is editing the variables below. The shadcn slots — background,
+ * foreground, card, primary, muted, border, ring — keep their conventional names
+ * so an existing shadcn theme slots straight in.
+ *
+ * Three layers, and the order matters:
+ *
+ *   1. Primitives. Raw ramps. Nothing renders from these directly.
+ *   2. Semantics. What a *role* means: canvas, surface, line, primary, status.
+ *   3. Utilities. The recipes CSS cannot say as one property: the lit surface,
+ *      the machined edge, the sunken well, the mark gradient, overlay elevation.
+ *
+ * **One declaration per token.** Every semantic token is `light-dark(light, dark)`,
+ * resolved against `color-scheme`, which the `.dark` class (or `data-mode="dark"`)
+ * sets. There is no second block of dark values to keep in step with the first,
+ * so a token cannot be right in one theme and forgotten in the other. Overriding
+ * a token under `.dark { }` still works, which is how a shadcn theme or the token
+ * editor on formeui.com supplies a separate dark value.
+ */
+
+@custom-variant dark (&:is(.dark *));
+
+:root,
+.light,
+[data-mode="light"] {
+  color-scheme: light;
+}
+
+.dark,
+[data-mode="dark"] {
+  color-scheme: dark;
+}
+
+/*
+ * The tokens are declared on every element that sets a theme, not only on
+ * :root. Tailwind's compiler lowers `light-dark()` to a pair of fallback
+ * variables, and a custom property is resolved where it is declared — so a
+ * token declared only on :root is fixed to the page's theme, and a `.dark` or
+ * `data-mode` region further down would switch `color-scheme` and keep every
+ * colour. Re-declaring them here makes a themed region resolve them for itself.
+ */
+:root,
+.light,
+.dark,
+[data-mode="light"],
+[data-mode="dark"] {
+  /* --- 1. Primitives ----------------------------------------------------- */
+
+  /* The accent ramp. Only `--primary` reads from it; everything interactive is
+     then derived from `--primary`, so a retheme is one variable. */
+  --blue-50: oklch(97.1% 0.014 254.6);
+  --blue-100: oklch(93.2% 0.032 255.6);
+  --blue-200: oklch(88% 0.059 254);
+  --blue-300: oklch(82% 0.093 253);
+  --blue-400: oklch(70.7% 0.165 254.6);
+  --blue-500: oklch(62.3% 0.214 259.8);
+  --blue-600: oklch(54.6% 0.245 262.9);
+  --blue-700: oklch(48.8% 0.243 264.4);
+  --blue-800: oklch(42.4% 0.199 265.6);
+  --blue-900: oklch(37% 0.15 262);
+  --blue-950: oklch(28% 0.11 262);
+
+  /* Peach and violet are atmosphere, never an interactive state: they warm the
+     marketing canvas and nothing else. Blue means "this responds to you"; peach
+     means "this is Forme". */
+  --peach-50: oklch(97% 0.015 45);
+  --peach-100: oklch(93% 0.035 45);
+  --peach-200: oklch(88% 0.06 45);
+  --peach-300: oklch(86% 0.078 45);
+  --peach-400: oklch(83.7% 0.097 45.9);
+  --peach-500: oklch(77% 0.115 42);
+  --peach-600: oklch(70% 0.125 38);
+  --peach-700: oklch(62% 0.12 35);
+
+  --violet-300: oklch(78% 0.11 288);
+  --violet-400: oklch(72% 0.14 288);
+  --violet-500: oklch(69% 0.173 287.8);
+  --violet-600: oklch(62% 0.18 288);
+
+  /* Neutrals are achromatic — chroma is zero at every step. A grey with a cast
+     looks deliberate next to the accent it was tuned for and muddy next to the
+     next one, and the moment greys carry hue there is no single place left to
+     change a theme. */
+  --neutral-50: oklch(98.75% 0 0);
+  --neutral-100: oklch(96% 0 0);
+  --neutral-200: oklch(93.5% 0 0);
+  --neutral-300: oklch(87% 0 0);
+  --neutral-400: oklch(70% 0 0);
+  --neutral-500: oklch(55.6% 0 0);
+  --neutral-600: oklch(48% 0 0);
+  --neutral-700: oklch(40% 0 0);
+  --neutral-800: oklch(24% 0 0);
+  --neutral-900: oklch(15.5% 0 0);
+  --neutral-950: oklch(11% 0 0);
+
+  /* --- 2. Semantics ------------------------------------------------------ */
+
+  /* The surface ladder: canvas → surface → raised → sunken → tint → contrast.
+     One elevation story per region; a raised card on a raised card is a bug.
+
+       background  the canvas the page sits on
+       card        surface: cards and panels
+       popover     raised: anything floating above the page
+       muted       sunken: wells, tracks, inputs pressed into the surface
+       accent      tint: the instant hover fill (shadcn calls this `accent`)
+       contrast    the inverted surface, for a tooltip or a kbd on a dark chip */
+  /* The dark canvas is a deep grey (about #181818), not black: pure black makes
+     the step to a card too steep to grade and leaves no room below it for a
+     sunken well. It was 18% and read as a void around the lit cards; at 21% the
+     page and its panels feel like one material. Every dark surface and edge
+     sits a fixed step from it, and `muted` sits just below it, so a well or a
+     pressed row sinks rather than lightens. */
+  --background: light-dark(oklch(98.75% 0 0), oklch(21% 0 0));
+  --foreground: light-dark(oklch(21% 0 0), oklch(93% 0 0));
+  --card: light-dark(oklch(100% 0 0), oklch(24% 0 0));
+  --card-foreground: var(--foreground);
+  --popover: light-dark(oklch(100% 0 0), oklch(28% 0 0));
+  --popover-foreground: var(--foreground);
+  --muted: light-dark(oklch(96% 0 0), oklch(19.5% 0 0));
+  --muted-foreground: light-dark(oklch(40% 0 0), oklch(70% 0 0));
+  --accent: light-dark(oklch(97% 0 0), oklch(31% 0 0));
+  --accent-foreground: var(--text-primary);
+  --secondary: var(--accent);
+  --secondary-foreground: var(--text-primary);
+  --contrast: light-dark(oklch(14.5% 0 0), oklch(96% 0 0));
+  --contrast-foreground: light-dark(oklch(97% 0 0), oklch(21% 0 0));
+  /* Behind a dialog or drawer. Scrims always darken — `foreground` at 30% would
+     lighten the page in the dark theme, which reads as the app washing out. */
+  --scrim: light-dark(oklch(0% 0 0 / 0.3), oklch(0% 0 0 / 0.6));
+
+  /* Text steps. `foreground` is body text; these are the rungs around it. */
+  --text-primary: light-dark(oklch(14.5% 0 0), oklch(98.5% 0 0));
+  --text-secondary: var(--muted-foreground);
+  --text-tertiary: light-dark(oklch(55.6% 0 0), oklch(62% 0 0));
+  --text-disabled: light-dark(oklch(64% 0 0), oklch(52% 0 0));
+
+  /* Structure vs event. `border` is the hairline that divides static structure;
+     `line` is the firmer edge of a control and the ring around a floating panel.
+     Borrowing one for the other is how every hairline on a page ends up moving
+     when a button is hovered. */
+  --border: light-dark(oklch(93.5% 0 0), oklch(32.5% 0 0));
+  --line: light-dark(oklch(14.5% 0 0 / 0.1), oklch(40% 0 0));
+  --input: var(--line);
+
+  /* A loading placeholder and the shimmer that sweeps it. Not `border` and
+     `muted`: dark `muted` sits below the page, so the sweep would dip into a hole
+     instead of catching light. Here the sweep is the lighter stop in both themes,
+     and the dark base sits just above `card`, so a skeleton reads as content
+     waiting rather than a cut-out. */
+  --skeleton: light-dark(oklch(93.5% 0 0), oklch(27.5% 0 0));
+  --skeleton-highlight: light-dark(oklch(96% 0 0), oklch(32% 0 0));
+
+  /* The light recipe's two stops: `surface-lit` is a few points above `card`, so
+     a lit panel is graded top to bottom rather than glowing at its edge, and
+     `edge-highlight` is the 1px inner top line that catches the light. */
+  --surface-lit: light-dark(oklch(99% 0.004 258), oklch(27% 0 0));
+  --edge-highlight: light-dark(oklch(100% 0 0 / 0.9), oklch(100% 0 0 / 0.05));
+
+  /* Controls that sit on a page rather than in a panel. */
+  --surface-default: var(--card);
+  --surface-hover: var(--accent);
+  --surface-active: var(--muted);
+  --surface-disabled: var(--muted);
+
+  --control-border: var(--line);
+  --control-border-hover: light-dark(oklch(14.5% 0 0 / 0.18), oklch(46% 0 0));
+  --control-border-active: light-dark(oklch(14.5% 0 0 / 0.26), oklch(52% 0 0));
+
+  /* The accent monopoly. One hue owns every interactive state — the primary
+     action, selection, links, focus, the active nav row — so colour always means
+     "this responds to you". Everything below is mixed from `--primary`, so
+     setting it to a green moves every one of them. */
+  --primary: var(--blue-600);
+  --primary-foreground: oklch(98.5% 0 0);
+  --brand: var(--primary);
+  --brand-foreground: var(--primary-foreground);
+  /* Text-safe accent: links, selected labels, accent icons. Darker than the fill
+     on white and lighter on black, so it clears 4.5:1 on either canvas. */
+  --brand-strong: light-dark(
+    color-mix(in oklch, var(--primary) 82%, black),
+    color-mix(in oklch, var(--primary) 55%, white)
+  );
+  /* The selection tint. Translucent, so it reads the same on canvas, card or
+     popover without a value per surface. */
+  --brand-subtle: light-dark(
+    color-mix(in oklch, var(--primary) 11%, transparent),
+    color-mix(in oklch, var(--primary) 24%, transparent)
+  );
+  --ring: light-dark(
+    color-mix(in oklch, var(--primary) 85%, white),
+    color-mix(in oklch, var(--primary) 60%, white)
+  );
+  --focus-ring: var(--ring);
+
+  /* Ghost actions have no container: they are text until hovered, then the same
+     instant tint every other row uses. */
+  --ghost-background: transparent;
+  --ghost-hover: var(--accent);
+  --ghost-active: var(--muted);
+  --ghost-foreground: var(--foreground);
+  --ghost-disabled: transparent;
+  --ghost-disabled-foreground: var(--text-disabled);
+
+  /* Status pairs. Meaning only, never interactivity, and always travelling as
+     three: the solid indicator (a dot, an icon), the `-subtle` tint it sits in,
+     and the `-strong` text step that stays readable on that tint. Mixing a tint
+     with another status's text is how a warning ends up illegible. */
+  --success: light-dark(oklch(59.6% 0.145 163.2), oklch(76.5% 0.177 163.2));
+  --success-subtle: light-dark(oklch(96.2% 0.043 156.7 / 0.57), oklch(39.3% 0.096 152.3 / 0.2));
+  --success-strong: light-dark(oklch(43.2% 0.095 166.9), oklch(90.5% 0.093 164.2));
+  --warning: light-dark(oklch(73.9% 0.177 58.2), oklch(64.5% 0.168 50));
+  --warning-subtle: light-dark(oklch(93.1% 0.107 94.6 / 0.2), oklch(35.3% 0.079 65 / 0.37));
+  --warning-strong: light-dark(oklch(47% 0.157 37.3), oklch(90.1% 0.076 70.7));
+  --destructive: light-dark(oklch(63.7% 0.237 25.3), oklch(57.7% 0.245 27.3));
+  --destructive-foreground: oklch(98.5% 0 0);
+  --destructive-subtle: light-dark(oklch(93.6% 0.032 17.7 / 0.42), oklch(42.9% 0.176 28.7 / 0.17));
+  --destructive-strong: light-dark(oklch(50.5% 0.213 27.5), oklch(70.4% 0.191 22.2));
+  --info: var(--primary);
+  --info-subtle: var(--brand-subtle);
+  --info-strong: var(--brand-strong);
+
+  /* Atmosphere, for the marketing canvas only. On white the hues travel darker
+     to stay legible. */
+  --peach: light-dark(var(--peach-600), var(--peach-400));
+  --violet: light-dark(var(--violet-600), var(--violet-500));
+  --electric: light-dark(var(--blue-600), var(--blue-400));
+
+  /* Chart series. A categorical ramp, deliberately *not* derived from the accent:
+     a chart painted in shades of the interactive blue makes every bar read as a
+     button. Ordered so neighbours never share a hue family, and validated for
+     colour-vision deficiency — sky sits before green because red and green
+     adjacent is the one pair a deuteranope cannot separate. Dark steps sit in
+     L 62–66%, where the hues still separate and every slot clears 3:1 on a card.
+     Recolour every chart here, never in chart code. */
+  --chart-1: light-dark(oklch(62% 0.19 256), oklch(65% 0.17 256));
+  --chart-2: light-dark(oklch(64% 0.17 172), oklch(66% 0.14 172));
+  --chart-3: light-dark(oklch(68% 0.16 62), oklch(66% 0.14 62));
+  --chart-4: light-dark(oklch(58% 0.2 305), oklch(62% 0.18 305));
+  --chart-5: light-dark(oklch(63% 0.19 25), oklch(64% 0.17 25));
+  --chart-6: light-dark(oklch(70% 0.12 215), oklch(66% 0.11 215));
+  --chart-7: light-dark(oklch(66% 0.15 130), oklch(66% 0.14 130));
+  --chart-8: light-dark(oklch(72% 0.11 330), oklch(66% 0.12 330));
+
+  /* Syntax, for code. The chart hues at text lightness: the chart steps are
+     tuned for bars and are too light to read as 13px text on a card, so each
+     keeps its hue and drops to ~50% in light, rises to ~78% in dark. */
+  --syntax-keyword: light-dark(oklch(50% 0.2 305), oklch(76% 0.13 305));
+  --syntax-string: light-dark(oklch(48% 0.12 160), oklch(80% 0.12 160));
+  --syntax-number: light-dark(oklch(52% 0.14 55), oklch(80% 0.12 62));
+  --syntax-function: light-dark(oklch(50% 0.18 256), oklch(76% 0.12 256));
+  --syntax-type: light-dark(oklch(48% 0.1 215), oklch(78% 0.1 215));
+  --syntax-tag: light-dark(oklch(52% 0.19 25), oklch(76% 0.13 25));
+  --syntax-property: light-dark(oklch(42% 0.07 256), oklch(84% 0.05 256));
+  --syntax-comment: var(--text-tertiary);
+
+  /* Metal, for the metal button's bezel and face. Achromatic like every
+     neutral; the chromatic glints in the bezel are mixed from the chart hues.
+     Dark mode keeps bright highlights, since chrome reflects whatever is lit,
+     but drops the face so the label stays readable on it. */
+  --metal-highlight: light-dark(oklch(99% 0 0), oklch(90% 0 0));
+  --metal-mid: light-dark(oklch(84% 0 0), oklch(55% 0 0));
+  --metal-shadow: light-dark(oklch(62% 0 0), oklch(26% 0 0));
+  --metal-face-top: light-dark(oklch(98% 0 0), oklch(38% 0 0));
+  --metal-face-bottom: light-dark(oklch(88% 0 0), oklch(24% 0 0));
+  --metal-emboss: light-dark(oklch(100% 0 0 / 0.8), oklch(0% 0 0 / 0.55));
+  /* The glint that crosses a face on hover; white in both themes, as light is. */
+  --metal-sheen: oklch(100% 0 0 / 0.45);
+
+  /* --- 3. Radii, elevation, motion -------------------------------------- */
+
+  /* The radius ladder. Every rung is a clear step down, so corners share one centre and
+     nesting looks machined:
+
+       3xl  20px  containers — cards, dialogs, menus, panels, sidebars
+       xl   12px  wells inside a card
+       md    6px  controls — buttons, fields, menu rows
+       sm    4px  chips, ticks, the thumb of a segmented control
+
+     Where two borders sit within 8px of each other, strict math still wins:
+     outer = inner + padding (a segmented track is 8px around a 4px thumb with
+     4px of padding). The in-between steps (lg 8px, 2xl 16px) exist for that
+     math, and for toasts — not for taste. */
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  --radius-xl: 12px;
+  --radius-2xl: 16px;
+  --radius-3xl: 20px;
+
+  /* Structure is flat; shadows are events. A static card is a hairline and the
+     lit gradient, never a shadow — a shadow says "this has left the page", which
+     is only true of things that float. The small steps remain for a control
+     that is genuinely lifted (a slider thumb, a segmented thumb). */
+  --shadow-2xs: 0 1px 1px 0 light-dark(oklch(0% 0 0 / 0.05), oklch(0% 0 0 / 0.3));
+  --shadow-xs: 0 1px 2px 0 light-dark(oklch(0% 0 0 / 0.08), oklch(0% 0 0 / 0.4));
+  --shadow-sm:
+    0 1px 2px 0 light-dark(oklch(0% 0 0 / 0.06), oklch(0% 0 0 / 0.3)),
+    0 1px 3px 0 light-dark(oklch(0% 0 0 / 0.1), oklch(0% 0 0 / 0.35));
+  --shadow-md:
+    0 2px 4px -1px light-dark(oklch(0% 0 0 / 0.06), oklch(0% 0 0 / 0.3)),
+    0 4px 6px -1px light-dark(oklch(0% 0 0 / 0.1), oklch(0% 0 0 / 0.4));
+  --shadow-lg:
+    0 4px 6px -2px light-dark(oklch(0% 0 0 / 0.05), oklch(0% 0 0 / 0.3)),
+    0 10px 15px -3px light-dark(oklch(0% 0 0 / 0.1), oklch(0% 0 0 / 0.45));
+  --shadow-xl:
+    0 10px 10px -5px light-dark(oklch(0% 0 0 / 0.04), oklch(0% 0 0 / 0.3)),
+    0 20px 25px -5px light-dark(oklch(0% 0 0 / 0.1), oklch(0% 0 0 / 0.5));
+  /* The overlay shadow carries its own inner highlight, so a floating panel is
+     lit like a card and lifted like nothing else. */
+  --shadow-overlay:
+    0 1px 2px light-dark(oklch(0% 0 0 / 0.1), oklch(0% 0 0 / 0.4)),
+    0 12px 32px -8px light-dark(oklch(0% 0 0 / 0.18), oklch(0% 0 0 / 0.5)),
+    inset 0 1px 0 var(--edge-highlight);
+
+  /* Motion. Feedback is instant; choreography is animated. A hover, a press, a
+     focus ring or a checked track changes colour on the frame it happens — no
+     transition. What animates is geometry (a thumb travelling, a bar growing)
+     and choreography (things arriving and leaving). Exits are always faster than
+     entrances, and every entrance condenses: fade, a little scale, a little blur. */
+  --ease-standard: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-entrance: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-modal: cubic-bezier(0.32, 0.72, 0, 1);
+  --ease-exit: cubic-bezier(0.4, 0, 1, 1);
+  --ease-draw: cubic-bezier(0.65, 0, 0.35, 1);
+  --duration-instant: 0ms;
+  --duration-fast: 150ms;
+  --duration-standard: 200ms;
+  --duration-modal: 300ms;
+  --duration-enter: 340ms;
+  --duration-data: 400ms;
+}
+
+/*
+ * Tailwind reads these to build the utilities Forme's components use. A consumer
+ * only ever edits the variables above; this block is what turns them into
+ * `bg-background`, `text-muted-foreground`, `border-border` and the rest.
+ */
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-contrast: var(--contrast);
+  --color-contrast-foreground: var(--contrast-foreground);
+  --color-scrim: var(--scrim);
+
+  --color-text-primary: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
+  --color-text-tertiary: var(--text-tertiary);
+  --color-text-disabled: var(--text-disabled);
+
+  --color-surface: var(--surface-default);
+  --color-surface-hover: var(--surface-hover);
+  --color-surface-active: var(--surface-active);
+  --color-surface-disabled: var(--surface-disabled);
+  --color-surface-lit: var(--surface-lit);
+
+  --color-control-border: var(--control-border);
+  --color-control-border-hover: var(--control-border-hover);
+  --color-control-border-active: var(--control-border-active);
+
+  --color-ghost: var(--ghost-background);
+  --color-ghost-hover: var(--ghost-hover);
+  --color-ghost-active: var(--ghost-active);
+  --color-ghost-disabled: var(--ghost-disabled);
+  --color-ghost-foreground: var(--ghost-foreground);
+  --color-ghost-disabled-foreground: var(--ghost-disabled-foreground);
+
+  --color-brand: var(--brand);
+  --color-brand-strong: var(--brand-strong);
+  --color-brand-foreground: var(--brand-foreground);
+  --color-brand-subtle: var(--brand-subtle);
+
+  --color-peach: var(--peach);
+  --color-peach-200: var(--peach-200);
+  --color-peach-300: var(--peach-300);
+  --color-peach-400: var(--peach-400);
+  --color-peach-600: var(--peach-600);
+  --color-violet: var(--violet);
+  --color-violet-400: var(--violet-400);
+  --color-violet-500: var(--violet-500);
+  --color-electric: var(--electric);
+
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-destructive-subtle: var(--destructive-subtle);
+  --color-destructive-strong: var(--destructive-strong);
+  --color-success: var(--success);
+  --color-success-subtle: var(--success-subtle);
+  --color-success-strong: var(--success-strong);
+  --color-warning: var(--warning);
+  --color-warning-subtle: var(--warning-subtle);
+  --color-warning-strong: var(--warning-strong);
+  --color-info: var(--info);
+  --color-info-subtle: var(--info-subtle);
+  --color-info-strong: var(--info-strong);
+
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-chart-6: var(--chart-6);
+  --color-chart-7: var(--chart-7);
+  --color-chart-8: var(--chart-8);
+  --color-syntax-keyword: var(--syntax-keyword);
+  --color-syntax-string: var(--syntax-string);
+  --color-syntax-number: var(--syntax-number);
+  --color-syntax-function: var(--syntax-function);
+  --color-syntax-type: var(--syntax-type);
+  --color-syntax-tag: var(--syntax-tag);
+  --color-syntax-property: var(--syntax-property);
+  --color-syntax-comment: var(--syntax-comment);
+  --color-border: var(--border);
+  --color-line: var(--line);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-focus-ring: var(--focus-ring);
+
+  --radius-sm: var(--radius-sm);
+  --radius-md: var(--radius-md);
+  --radius-lg: var(--radius-lg);
+  --radius-xl: var(--radius-xl);
+  --radius-2xl: var(--radius-2xl);
+  --radius-3xl: var(--radius-3xl);
+
+  --font-sans: var(--font-sans);
+  --font-mono: var(--font-mono);
+
+  --shadow-2xs: var(--shadow-2xs);
+  --shadow-xs: var(--shadow-xs);
+  --shadow-sm: var(--shadow-sm);
+  --shadow-md: var(--shadow-md);
+  --shadow-lg: var(--shadow-lg);
+  --shadow-xl: var(--shadow-xl);
+  --shadow-overlay: var(--shadow-overlay);
+
+  --ease-standard: var(--ease-standard);
+  --ease-entrance: var(--ease-entrance);
+  --ease-modal: var(--ease-modal);
+  --ease-exit: var(--ease-exit);
+  --ease-draw: var(--ease-draw);
+
+  /* The type scale, as composite utilities: `<family>-<weight>`, so
+     `text-body-medium` rather than `text-sm font-medium`.
+
+     Named for size and weight rather than for a role, because the same size is a
+     label in one place and body copy in another and the difference is context,
+     not font.
+
+     The line-heights are the part that matters and the part that is easy to get
+     wrong. `body` is 14px on a **20px** line, not 14px on a 22px one: a medium
+     button is 36px tall with 8px of padding, which leaves exactly 20px of content
+     box. A 22px line box overflows that by 2px and gets clipped by the button's
+     `overflow-hidden`, which shows up as text sitting slightly too low and looking
+     subtly cramped rather than as anything obviously broken.
+
+     Captions carry a little positive tracking, which is what keeps 12px text
+     legible — negative tracking at that size closes the counters. */
+  --text-body-regular: 0.875rem;
+  --text-body-regular--line-height: 1.25rem;
+  --text-body-regular--font-weight: 400;
+  --text-body-medium: 0.875rem;
+  --text-body-medium--line-height: 1.25rem;
+  --text-body-medium--font-weight: 500;
+  --text-body-semibold: 0.875rem;
+  --text-body-semibold--line-height: 1.25rem;
+  --text-body-semibold--font-weight: 600;
+  --text-body-bold: 0.875rem;
+  --text-body-bold--line-height: 1.25rem;
+  --text-body-bold--font-weight: 700;
+
+  --text-body-2-regular: 0.8125rem;
+  --text-body-2-regular--line-height: 1.125rem;
+  --text-body-2-regular--font-weight: 400;
+  --text-body-2-medium: 0.8125rem;
+  --text-body-2-medium--line-height: 1.125rem;
+  --text-body-2-medium--font-weight: 500;
+  --text-body-2-semibold: 0.8125rem;
+  --text-body-2-semibold--line-height: 1.125rem;
+  --text-body-2-semibold--font-weight: 600;
+
+  --text-caption-1-regular: 0.75rem;
+  --text-caption-1-regular--line-height: 1rem;
+  --text-caption-1-regular--letter-spacing: 0.15px;
+  --text-caption-1-regular--font-weight: 400;
+  --text-caption-1-medium: 0.75rem;
+  --text-caption-1-medium--line-height: 1rem;
+  --text-caption-1-medium--letter-spacing: 0.15px;
+  --text-caption-1-medium--font-weight: 500;
+  --text-caption-1-semibold: 0.75rem;
+  --text-caption-1-semibold--line-height: 1rem;
+  --text-caption-1-semibold--letter-spacing: 0.15px;
+  --text-caption-1-semibold--font-weight: 600;
+  --text-caption-1-bold: 0.75rem;
+  --text-caption-1-bold--line-height: 1rem;
+  --text-caption-1-bold--letter-spacing: 0.15px;
+  --text-caption-1-bold--font-weight: 700;
+
+  --text-caption-2-regular: 0.6875rem;
+  --text-caption-2-regular--line-height: 0.9375rem;
+  --text-caption-2-regular--letter-spacing: 0.2px;
+  --text-caption-2-regular--font-weight: 400;
+  --text-caption-2-medium: 0.6875rem;
+  --text-caption-2-medium--line-height: 0.9375rem;
+  --text-caption-2-medium--letter-spacing: 0.2px;
+  --text-caption-2-medium--font-weight: 500;
+  --text-caption-2-semibold: 0.6875rem;
+  --text-caption-2-semibold--line-height: 0.9375rem;
+  --text-caption-2-semibold--letter-spacing: 0.2px;
+  --text-caption-2-semibold--font-weight: 600;
+
+  --text-title-1-semibold: 1.0625rem;
+  --text-title-1-semibold--line-height: 1.5rem;
+  --text-title-1-semibold--font-weight: 600;
+  --text-title-1-bold: 1.0625rem;
+  --text-title-1-bold--line-height: 1.5rem;
+  --text-title-1-bold--font-weight: 700;
+  --text-title-2-semibold: 0.9375rem;
+  --text-title-2-semibold--line-height: 1.375rem;
+  --text-title-2-semibold--font-weight: 600;
+  --text-title-2-bold: 0.9375rem;
+  --text-title-2-bold--line-height: 1.375rem;
+  --text-title-2-bold--font-weight: 700;
+  --text-title-3-semibold: 0.8125rem;
+  --text-title-3-semibold--line-height: 1.25rem;
+  --text-title-3-semibold--font-weight: 600;
+  --text-headline-medium: 1.3125rem;
+  --text-headline-medium--line-height: 1.75rem;
+  --text-headline-medium--font-weight: 500;
+  --text-headline-semibold: 1.3125rem;
+  --text-headline-semibold--line-height: 1.75rem;
+  --text-headline-semibold--font-weight: 600;
+
+  /* Choreography, as `animate-*` utilities. Durations and curves from the scale
+     above; reuse one of these before inventing a timing. */
+  --animate-fade-in: fade-in var(--duration-standard) var(--ease-entrance);
+  --animate-fade-out: fade-out var(--duration-fast) var(--ease-exit);
+  --animate-enter: enter-in var(--duration-enter) var(--ease-entrance) both;
+  --animate-slide-up: enter-in var(--duration-enter) var(--ease-entrance) both;
+  --animate-panel-in: panel-in var(--duration-fast) var(--ease-entrance);
+  --animate-panel-out: panel-out var(--duration-fast) var(--ease-exit) forwards;
+  --animate-pop-in: modal-in var(--duration-modal) var(--ease-modal);
+  --animate-pop-out: modal-out var(--duration-fast) var(--ease-exit) forwards;
+  --animate-toast-in: toast-in var(--duration-standard) var(--ease-entrance);
+  --animate-toast-out: toast-out var(--duration-fast) var(--ease-exit) forwards;
+  --animate-icon-swap: icon-swap 300ms var(--ease-entrance);
+  /* A checkbox tick draws itself; a radio dot grows from its centre. Both run on
+     check only — unchecking is instant, because it is feedback, not arrival. */
+  --animate-draw: draw var(--duration-standard) var(--ease-draw) both;
+  --animate-dot-in: dot-in var(--duration-fast) var(--ease-entrance) both;
+  --animate-pulse-soft: pulse-soft 1.6s ease-in-out infinite;
+  --animate-shimmer: shimmer 1.6s linear infinite;
+  /* A label replaced in place: the old one leaves up through the top of its
+     slot as the new one rises into it. */
+  --animate-roll-in: roll-in var(--duration-enter) var(--ease-entrance) both;
+  --animate-roll-out: roll-out var(--duration-fast) var(--ease-exit) forwards;
+  /* A row joining a list opens its own height, so what is below slides down
+     instead of jumping. The row is a one-track grid over a `min-h-0` child. */
+  --animate-row-in: row-in var(--duration-enter) var(--ease-standard) both;
+  /* A connector drawn from where it starts; set its `origin` to that end. */
+  --animate-grow-y: grow-y var(--duration-enter) var(--ease-draw) both;
+  /* A share of a whole growing from its start: a result bar, a split meter. */
+  --animate-grow-x: grow-x var(--duration-data) var(--ease-standard) both;
+  /* A card thrown off a stack, from wherever it was dragged to. Set
+     `--fling-direction` (1 or -1), and `--fling-from` / `--fling-rotate`. */
+  --animate-fling-out: fling-out var(--duration-standard) var(--ease-exit) forwards;
+}
+
+/* --- Utilities: the recipes ---------------------------------------------- */
+
+/**
+ * The light recipe, for cards and panels: light from the top-left corner, a
+ * few points above the surface, fading to the plain surface well before the
+ * middle. A full-height grade made every card read as a gradient; a corner
+ * reads as light. Pair it with `edge`.
+ */
+@utility lit {
+  background-image: linear-gradient(330deg, var(--card) 75%, var(--surface-lit));
+}
+
+/** The 1px inner top highlight that catches the light on a lit surface. */
+@utility edge {
+  box-shadow: inset 0 1px 0 var(--edge-highlight);
+}
+
+/** A sunken surface: an inner shadow for wells, tracks and fields. */
+@utility well {
+  box-shadow: inset 0 1px 2px light-dark(oklch(0% 0 0 / 0.05), oklch(0% 0 0 / 0.35));
+}
+
+/**
+ * Elevation for anything that floats: dropdowns, popovers, dialogs, toasts. The
+ * shadow already includes the inner highlight, and the `line` ring gives the
+ * panel an edge on a canvas of the same lightness.
+ */
+@utility floating {
+  border: 1px solid var(--line);
+  background-image: linear-gradient(180deg, var(--surface-lit), var(--popover));
+  background-color: var(--popover);
+  box-shadow: var(--shadow-overlay);
+}
+
+/**
+ * The mark recipe: a filled control lit from above, with a 1px white inner ring
+ * at 20% — the ring is what makes the fill look machined rather than painted.
+ * It belongs to filled controls (primary and destructive buttons, the on-state
+ * of a switch or checkbox) and brand marks, nothing else.
+ *
+ * Both stops are mixed from `--primary`, darker than it, so the label keeps its
+ * contrast at either end of the gradient and any accent gets the same light.
+ *
+ * Hover and press swap the gradient **instantly**. That is not a limitation
+ * worked around — `background-image` cannot interpolate, and colour feedback is
+ * meant to land on the frame it happens. Press flattens to the darkest stop; the
+ * ring stays.
+ */
+@utility bg-button-primary {
+  background-color: var(--primary);
+  background-image: linear-gradient(
+    180deg,
+    var(--primary),
+    color-mix(in oklch, var(--primary) 86%, black)
+  );
+  box-shadow: inset 0 0 0 1px oklch(100% 0 0 / 0.15);
+
+  &:hover:not(:disabled, [aria-disabled="true"]) {
+    background-image: linear-gradient(
+      180deg,
+      color-mix(in oklch, var(--primary) 86%, black),
+      color-mix(in oklch, var(--primary) 74%, black)
+    );
+  }
+
+  &:active:not(:disabled, [aria-disabled="true"]) {
+    background-image: none;
+    background-color: color-mix(in oklch, var(--primary) 74%, black);
+  }
+}
+
+/** The mark recipe on the destructive hue, for last-resort actions. */
+@utility bg-button-danger {
+  background-color: var(--destructive);
+  background-image: linear-gradient(
+    180deg,
+    var(--destructive),
+    color-mix(in oklch, var(--destructive) 86%, black)
+  );
+  box-shadow: inset 0 0 0 1px oklch(100% 0 0 / 0.2);
+
+  &:hover:not(:disabled, [aria-disabled="true"]) {
+    background-image: linear-gradient(
+      180deg,
+      color-mix(in oklch, var(--destructive) 86%, black),
+      color-mix(in oklch, var(--destructive) 74%, black)
+    );
+  }
+
+  &:active:not(:disabled, [aria-disabled="true"]) {
+    background-image: none;
+    background-color: color-mix(in oklch, var(--destructive) 74%, black);
+  }
+}
+
+/**
+ * The secondary button: the light recipe at a whisper. Hover tints from the
+ * top, press sinks — all instant.
+ */
+@utility bg-button-secondary {
+  background-color: var(--card);
+  background-image: linear-gradient(180deg, var(--surface-lit), var(--card) 65%);
+  /* box-shadow: inset 0 1px 0 var(--edge-highlight); */
+
+  &:hover:not(:disabled, [aria-disabled="true"]) {
+    background-image: linear-gradient(180deg, var(--accent), var(--card) 55%);
+  }
+
+  &:active:not(:disabled, [aria-disabled="true"]) {
+    background-image: linear-gradient(180deg, var(--muted), var(--card) 55%);
+  }
+}
+
+/**
+ * The secondary button's edge: the structural hairline rather than a control's
+ * firmer `line`, so the graded surface carries the shape. Hover and press firm
+ * it up with `hover:border-control-border-hover/60` and
+ * `active:border-control-border-active/40`.
+ */
+@utility border-button-secondary {
+  border-color: var(--border);
+}
+
+/** A brand mark — logo tile, avatar tile — in the mark recipe at any size. */
+@utility bg-mark {
+  background-color: var(--primary);
+  background-image: linear-gradient(
+    180deg,
+    var(--primary),
+    color-mix(in oklch, var(--primary) 86%, black)
+  );
+  box-shadow: inset 0 0 0 1px oklch(100% 0 0 / 0.2);
+}
+
+/**
+ * The metal bezel: bands of chrome laid round a conic gradient, with two faint
+ * glints of colour, starting from `--shine-angle`. Animate that angle with the
+ * `shine` keyframes and the reflections travel round the rim. The outer
+ * hairline keeps the rim's edge on a canvas as light as its highlights.
+ */
+@utility bg-metal-bezel {
+  background-color: var(--metal-mid);
+  background-image: conic-gradient(
+    from var(--shine-angle),
+    var(--metal-highlight) 0deg,
+    var(--metal-shadow) 45deg,
+    var(--metal-mid) 80deg,
+    color-mix(in oklch, var(--metal-highlight) 70%, var(--chart-2)) 115deg,
+    var(--metal-shadow) 160deg,
+    var(--metal-highlight) 200deg,
+    var(--metal-mid) 240deg,
+    var(--metal-shadow) 285deg,
+    color-mix(in oklch, var(--metal-highlight) 70%, var(--chart-6)) 325deg,
+    var(--metal-highlight) 360deg
+  );
+  box-shadow:
+    0 0 0 1px var(--line),
+    0 1px 2px oklch(0% 0 0 / 0.12);
+}
+
+/**
+ * The brushed face inside a metal bezel: lit from above, a highlight along its
+ * top edge and a shadow along its bottom, so it reads as set into the rim.
+ * Hover lifts it a step and press sinks it, on the frame they happen, from the
+ * control it sits in.
+ */
+@utility bg-metal-face {
+  background-color: var(--metal-face-bottom);
+  background-image: linear-gradient(180deg, var(--metal-face-top), var(--metal-face-bottom));
+  box-shadow:
+    inset 0 1px 0 var(--metal-emboss),
+    inset 0 -1px 0 oklch(0% 0 0 / 0.12),
+    0 0 0 1px oklch(0% 0 0 / 0.18);
+
+  :hover:not(:disabled, [aria-disabled="true"]) > & {
+    background-image: linear-gradient(
+      180deg,
+      var(--metal-face-top),
+      color-mix(in oklch, var(--metal-face-bottom) 70%, var(--metal-face-top))
+    );
+  }
+
+  :active:not(:disabled, [aria-disabled="true"]) > & {
+    background-image: linear-gradient(0deg, var(--metal-face-top), var(--metal-face-bottom));
+    box-shadow:
+      inset 0 1px 2px oklch(0% 0 0 / 0.25),
+      0 0 0 1px oklch(0% 0 0 / 0.18);
+  }
+}
+
+/**
+ * A quantity fill — progress, usage, a bar list — lit from above. The only
+ * gradient allowed on data that is a single amount rather than a series.
+ */
+@utility bg-meter {
+  background-color: var(--primary);
+  background-image: linear-gradient(
+    180deg,
+    color-mix(in oklch, var(--primary) 85%, white),
+    var(--primary)
+  );
+}
+
+/** Tabular figures, for every number that sits in a column or changes. */
+@utility tnum {
+  font-variant-numeric: tabular-nums;
+}
+
+/**
+ * Reserves the scrollbar's lane even when nothing overflows, so content does not
+ * shift when a page grows a scrollbar or an overlay locks scroll. Opt-in, and only
+ * on the element that actually scrolls: put it on `<html>` for a page where the
+ * document scrolls. In an app shell (`h-dvh overflow-hidden` with a scrolling
+ * pane) `<html>` never scrolls, so on it this paints an empty strip beside the
+ * pane's own scrollbar.
+ */
+@utility scrollbar-gutter-stable {
+  scrollbar-gutter: stable;
+}
+
+/* --- Keyframes ----------------------------------------------------------- */
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes fade-out {
+  to {
+    opacity: 0;
+  }
+}
+
+/* Content arriving: condenses into place rather than sliding from a distance. */
+@keyframes enter-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px) scale(0.97);
+    filter: blur(2px);
+  }
+}
+
+/* Menus and popovers. */
+@keyframes panel-in {
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+    filter: blur(3px);
+  }
+}
+
+@keyframes panel-out {
+  to {
+    opacity: 0;
+    transform: scale(0.96);
+    filter: blur(3px);
+  }
+}
+
+/* Dialogs and the command menu: the panel carries the page while it is open,
+   so it condenses from further out. */
+@keyframes modal-in {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+    filter: blur(4px);
+  }
+}
+
+@keyframes modal-out {
+  to {
+    opacity: 0;
+    transform: scale(0.95);
+    filter: blur(3px);
+  }
+}
+
+@keyframes toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+    filter: blur(2px);
+  }
+}
+
+@keyframes toast-out {
+  to {
+    opacity: 0;
+    transform: translateY(6px);
+    filter: blur(2px);
+  }
+}
+
+@keyframes icon-swap {
+  from {
+    opacity: 0;
+    transform: rotate(-100deg) scale(0.5);
+    filter: blur(2px);
+  }
+}
+
+/* For an SVG path with `pathLength="1"` and `stroke-dasharray: 1`. */
+@keyframes draw {
+  from {
+    stroke-dashoffset: 1;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes dot-in {
+  from {
+    transform: scale(0);
+  }
+}
+
+@keyframes pulse-soft {
+  50% {
+    opacity: 0.4;
+  }
+}
+
+@keyframes roll-in {
+  from {
+    opacity: 0;
+    transform: translateY(70%);
+    filter: blur(2px);
+  }
+}
+
+@keyframes roll-out {
+  to {
+    opacity: 0;
+    transform: translateY(-70%);
+    filter: blur(2px);
+  }
+}
+
+@keyframes row-in {
+  from {
+    grid-template-rows: 0fr;
+    opacity: 0;
+  }
+}
+
+@keyframes grow-y {
+  from {
+    scale: 1 0;
+  }
+}
+
+@keyframes grow-x {
+  from {
+    scale: 0 1;
+  }
+}
+
+@keyframes fling-out {
+  from {
+    translate: var(--fling-from, 0) 0;
+    rotate: var(--fling-rotate, 0deg);
+  }
+  to {
+    translate: calc(var(--fling-direction, 1) * 120%) 0;
+    rotate: calc(var(--fling-direction, 1) * 12deg);
+    opacity: 0;
+  }
+}
+
+/* The shine border's beam turns by animating the angle its conic gradient
+   starts from. Registering the angle is what lets it interpolate; a browser
+   without `@property` shows the beam standing still. */
+@property --shine-angle {
+  syntax: "<angle>";
+  inherits: false;
+  initial-value: 0deg;
+}
+
+@keyframes shine {
+  to {
+    --shine-angle: 360deg;
+  }
+}
+
+/* The marquee track slides by exactly one copy of its content. Both copies move
+   together, so when the first has left the second is where it started. */
+@keyframes marquee {
+  to {
+    transform: translateX(-100%);
+  }
+}
+
+/* The one shimmer in the system, for skeletons and loading rows. */
+@keyframes shimmer {
+  from {
+    background-position: 200% 0;
+  }
+  to {
+    background-position: -200% 0;
+  }
+}
+
+/* The theme toggle reveals the new theme with its own animation on the new
+   snapshot, so the browser's default crossfade is off for as long as it runs. */
+html[data-theme-reveal]::view-transition-old(root),
+html[data-theme-reveal]::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+/* Loaders. Each one's base style is a frozen frame of itself: under reduced
+   motion an animation runs once in 0.01ms and the element settles back to its
+   base, so a still loader still reads as one. */
+@keyframes loader-rise {
+  0%,
+  60%,
+  100% {
+    transform: none;
+    opacity: 0.35;
+  }
+  30% {
+    transform: translateY(-40%);
+    opacity: 1;
+  }
+}
+
+@keyframes loader-bar {
+  0%,
+  100% {
+    scale: 1 0.35;
+  }
+  50% {
+    scale: 1 1;
+  }
+}
+
+/* A pulse that passes along a row of bars once per loop: the waveform's
+   "thinking", which must not read as either listening or a loader. */
+@keyframes waveform-travel {
+  0%,
+  45%,
+  100% {
+    scale: 1 0.3;
+  }
+  20% {
+    scale: 1 1;
+  }
+}
+
+/* A cell flares and fades behind the head, so a grid of them reads as a comet. */
+@keyframes loader-cell {
+  0% {
+    opacity: 1;
+  }
+  45%,
+  100% {
+    opacity: 0.15;
+  }
+}
+
+@keyframes loader-glyph {
+  to {
+    transform: translateY(-100%);
+  }
+}
+
+@keyframes loader-comet {
+  to {
+    stroke-dashoffset: -100;
+  }
+}
+
+@keyframes loader-twinkle {
+  0%,
+  100% {
+    scale: 0.5;
+    opacity: 0.25;
+  }
+  50% {
+    scale: 1;
+    opacity: 1;
+  }
+}
+
+/* A band of light across a working label. A mask rather than a gradient fill:
+   the text keeps its one colour and only its opacity dips as the band passes
+   (mask colours are alpha only). The base position shows no band. */
+@utility text-sweep {
+  mask-image: linear-gradient(90deg, #000 40%, rgb(0 0 0 / 0.35) 50%, #000 60%);
+  mask-size: 300% 100%;
+  mask-position: 0 0;
+  animation: text-sweep 2.2s linear infinite;
+}
+
+@keyframes text-sweep {
+  from {
+    mask-position: 100% 0;
+  }
+  to {
+    mask-position: 0 0;
+  }
+}
+
+@layer base {
+  * {
+    border-color: var(--border);
+  }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background-color: var(--background);
+    color: var(--foreground);
+    font-synthesis-weight: none;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* Focus is always visible, always the accent, and instant. Never remove this.
+     The outline follows the element's own radius, so no radius is set here. */
+  :focus-visible {
+    outline: 2px solid var(--focus-ring);
+    outline-offset: 2px;
+  }
+
+  ::selection {
+    background-color: var(--brand-subtle);
+    color: var(--brand-strong);
+  }
+}
+
+/*
+ * Reduced motion collapses every animation and transition to an instant, rather
+ * than removing them. The difference matters in React: an exit that is removed
+ * never fires `animationend`, so whatever waits for it — Base UI unmounting a
+ * closed popup — waits forever. An exit that takes 0.01ms finishes on the next
+ * frame, and nothing needs a timeout fallback.
+ */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  ::before,
+  ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

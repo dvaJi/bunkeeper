@@ -1,15 +1,22 @@
+@import "tailwindcss";
+@import "./components/forme/foundation.css";
+@source "./src";
+@source "./components";
+
 :root {
-  --bg: #0b0c0e;
-  --bg-raised: #141518;
-  --border: #232529;
-  --text: #e6e8eb;
-  --dim: #8b8f98;
-  --accent: #f5b043;
-  --accent-dim: #f5b04322;
-  --green: #4ade80;
-  --red: #f87171;
-  --mono: ui-monospace, "SF Mono", "Cascadia Code", Menlo, Consolas, monospace;
   --sans: -apple-system, "Segoe UI", Inter, Roboto, sans-serif;
+  --mono: ui-monospace, "SF Mono", "Cascadia Code", Menlo, Consolas, monospace;
+  --primary: oklch(80% 0.135 75);
+  --primary-foreground: oklch(24% 0.05 75);
+  --bg: var(--background);
+  --text: var(--foreground);
+  --dim: var(--muted-foreground);
+  --accent: var(--primary);
+  --accent-dim: var(--ghost-background);
+  --bg-raised: var(--card);
+  --green: var(--success);
+  --red: var(--danger);
+  --code-surface: var(--muted);
 }
 
 * {
@@ -98,6 +105,29 @@ a:hover {
 .top-nav a:hover {
   color: var(--text);
   text-decoration: none;
+}
+
+.menu-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid var(--border);
+  background: var(--bg-raised);
+  color: var(--dim);
+  border-radius: 6px;
+  font-size: 13px;
+  padding: 5px 12px;
+  cursor: pointer;
+}
+
+.menu-trigger:hover {
+  color: var(--text);
+  border-color: var(--accent);
+}
+
+.menu-trigger kbd {
+  font-family: var(--mono);
+  font-size: 11px;
 }
 
 .site-main {
@@ -227,7 +257,7 @@ a:hover {
   border: 1px solid var(--border);
   border-radius: 10px;
   overflow: hidden;
-  background: #0e0f12;
+  background: var(--code-surface);
   margin: 14px 0;
 }
 
@@ -246,7 +276,7 @@ a:hover {
   font-family: var(--mono);
   font-size: 13.5px;
   line-height: 1.6;
-  color: #d7dae0;
+  color: var(--foreground);
 }
 
 /* better scrolls — thin themed bars, contained overscroll, height caps */
@@ -259,7 +289,7 @@ a:hover {
   overflow: auto;
   overscroll-behavior: contain;
   scrollbar-width: thin;
-  scrollbar-color: #2f3136 transparent;
+  scrollbar-color: var(--border) transparent;
 }
 
 .demo-code {
@@ -292,7 +322,7 @@ a:hover {
 .code-block .th-code::-webkit-scrollbar-thumb,
 .demo-code::-webkit-scrollbar-thumb,
 .lint-out::-webkit-scrollbar-thumb {
-  background: #2f3136;
+  background: var(--border);
   border-radius: 999px;
   border: 2px solid transparent;
   background-clip: padding-box;
@@ -303,7 +333,7 @@ a:hover {
 .code-block .th-code::-webkit-scrollbar-thumb:hover,
 .demo-code::-webkit-scrollbar-thumb:hover,
 .lint-out::-webkit-scrollbar-thumb:hover {
-  background: #4a4d55;
+  background: var(--muted-foreground);
   background-clip: padding-box;
 }
 
@@ -693,7 +723,7 @@ td code {
 .lint {
   border: 1px solid var(--border);
   border-radius: 10px;
-  background: #0e0f12;
+  background: var(--code-surface);
   overflow: hidden;
   min-width: 0;
 }
@@ -842,7 +872,7 @@ td code {
   font-family: var(--mono);
   font-size: 13.5px;
   line-height: 1.65;
-  color: #d7dae0;
+  color: var(--foreground);
 }
 
 .code-block .th-code {
@@ -894,7 +924,7 @@ td code {
 
 .th-variable,
 .th-code-inline {
-  color: #d7dae0;
+  color: var(--foreground);
 }
 
 .th-operator {

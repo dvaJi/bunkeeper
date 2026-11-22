@@ -1,5 +1,7 @@
 import { Link, Terminal, Table } from "../ui";
 import { Demo } from "../demo";
+import { Button } from "../components/forme/button/button";
+import { Card, CardDescription, CardHeader, CardTitle } from "../components/forme/card/card";
 
 export function Home() {
   return (
@@ -24,17 +26,14 @@ export function Home() {
 ✓ created .github/workflows/check.yml (bun canary + fmt, lint, test)
 ✓ created AGENTS.md with the bunkeeper section`}</Terminal>
         <div className="hero-actions">
-          <Link to="/docs/getting-started" className="btn primary">
-            Get started
-          </Link>
-          <a
-            href="https://github.com/dvaJi/bunkeeper"
-            className="btn"
-            target="_blank"
-            rel="noreferrer"
-          >
-            GitHub
-          </a>
+          <Button asChild>
+            <Link to="/docs/getting-started">Get started</Link>
+          </Button>
+          <Button variant="secondary" asChild>
+            <a href="https://github.com/dvaJi/bunkeeper" target="_blank" rel="noreferrer">
+              GitHub
+            </a>
+          </Button>
         </div>
       </section>
 
@@ -94,10 +93,12 @@ export function Home() {
 
 function Feature({ icon, title, body }: { icon: string; title: string; body: string }) {
   return (
-    <div className="feature">
-      <div className="feature-icon">{icon}</div>
-      <h3>{title}</h3>
-      <p>{body}</p>
-    </div>
+    <Card>
+      <CardHeader>
+        <div className="feature-icon">{icon}</div>
+        <CardTitle>{title}</CardTitle>
+        <CardDescription>{body}</CardDescription>
+      </CardHeader>
+    </Card>
   );
 }

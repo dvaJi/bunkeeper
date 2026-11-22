@@ -1,4 +1,15 @@
 import { useEffect, useState } from "react";
+import {
+  CommandMenu,
+  CommandMenuEmpty,
+  CommandMenuGroup,
+  CommandMenuInput,
+  CommandMenuItem,
+  CommandMenuList,
+  CommandMenuSeparator,
+} from "./components/forme/command-menu/command-menu";
+import { Kbd } from "./components/forme/kbd/kbd";
+import { TooltipProvider } from "./components/forme/tooltip/tooltip";
 import { Link } from "./ui";
 import { Home } from "./pages/home";
 import { GettingStarted } from "./pages/getting-started";
@@ -16,6 +27,15 @@ const ROUTES: Record<string, () => React.JSX.Element> = {
   "/docs/cli": CliPage,
 };
 
+const PAGES = [
+  { to: "/", label: "Home" },
+  { to: "/docs/getting-started", label: "Getting started" },
+  { to: "/docs/presets", label: "Presets" },
+  { to: "/docs/rules", label: "Rules" },
+  { to: "/docs/agents", label: "Agent rules" },
+  { to: "/docs/cli", label: "CLI" },
+];
+
 function useHashRoute() {
   const [route, setRoute] = useState(() => window.location.hash.slice(1) || "/");
   useEffect(() => {
@@ -29,7 +49,11 @@ function useHashRoute() {
   return route;
 }
 
-function Header() {
+function navigate(to: string) {
+  window.location.hash = to;
+}
+
+function Header({ route, onOpenMenu }: { route: string; onOpenMenu: () => void }) {
   return (
     <header className="site-header">
       <div className="container header-inner">
@@ -37,13 +61,28 @@ function Header() {
           <span className="brand-mark">🍞</span> bunkeeper
         </Link>
         <nav className="top-nav">
-          <Link to="/docs/getting-started">Docs</Link>
-          <Link to="/docs/presets">Presets</Link>
-          <Link to="/docs/rules">Rules</Link>
+          {PAGES.slice(1).map((page) => (
+            <a
+              key={page.to}
+              href={`#${page.to}`}
+              className={route === page.to ? "active" : undefined}
+            >
+              {page.label}
+            </a>
+          ))}
           <a href="https://github.com/dvaJi/bunkeeper" target="_blank" rel="noreferrer">
             GitHub ↗
           </a>
         </nav>
+        <button
+          type="button"
+          className="menu-trigger"
+          onClick={onOpenMenu}
+          aria-label="Search docs"
+        >
+          Search
+          <Kbd>⌘K</Kbd>
+        </button>
       </div>
     </header>
   );
@@ -62,14 +101,59 @@ function Footer() {
 
 export function App() {
   const route = useHashRoute();
+  const [menuOpen, setMenuOpen] = useState(false);
   const Page = ROUTES[route] ?? Home;
+
   return (
-    <div className="site">
-      <Header />
-      <main className="site-main container">
-        <Page />
-      </main>
-      <Footer />
-    </div>
+    <TooltipProvider>
+      <div className="site">
+        <Header route={route} onOpenMenu={() => setMenuOpen(true)} />
+        <main className="site-main container">
+          <Page />
+        </main>
+        <Footer />
+        <CommandMenu open={menuOpen} onOpenChange={setMenuOpen} label="Search docs">
+          <CommandMenuInput placeholder="Search docs…" />
+          <CommandMenuList>
+            <CommandMenuEmpty>No results.</CommandMenuEmpty>
+            <CommandMenuGroup heading="Pages">
+              {PAGES.map((page) => (
+                <CommandMenuItem
+                  key={page.to}
+                  value={page.label}
+                  onSelect={() => navigate(page.to)}
+                >
+                  {page.label}
+                </CommandMenuItem>
+              ))}
+            </CommandMenuGroup>
+            <CommandMenuSeparator />
+            <CommandMenuGroup heading="Rules">
+              <CommandMenuItem
+                value="Rules — all bunkeeper rules"
+                onSelect={() => navigate("/docs/rules")}
+              >
+                All bunkeeper rules
+              </CommandMenuItem>
+              <CommandMenuItem
+                value="Presets — recommended and strict"
+                onSelect={() => navigate("/docs/presets")}
+              >
+                Recommended and strict
+              </CommandMenuItem>
+            </CommandMenuGroup>
+            <CommandMenuSeparator />
+            <CommandMenuGroup heading="Links">
+              <CommandMenuItem
+                value="GitHub repository"
+                onSelect={() => window.open("https://github.com/dvaJi/bunkeeper", "_blank")}
+              >
+                GitHub repository ↗
+              </CommandMenuItem>
+            </CommandMenuGroup>
+          </CommandMenuList>
+        </CommandMenu>
+      </div>
+    </TooltipProvider>
   );
 }

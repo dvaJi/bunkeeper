@@ -27,3 +27,24 @@ if (!result.success) {
 }
 
 console.log(`built ${result.outputs.length} files to ${outdir}`);
+
+const tailwind = Bun.spawnSync([
+  "bunx",
+  "@tailwindcss/cli",
+  "-i",
+  "./src/styles.css",
+  "-o",
+  "./dist/styles.css",
+  "--minify",
+]);
+
+if (tailwind.exitCode !== 0) {
+  console.error(tailwind.stderr.toString());
+  process.exit(1);
+}
+
+const indexPath = join(outdir, "index.html");
+let indexHtml = await Bun.file(indexPath).text();
+indexHtml = indexHtml.replace("</head>", '<link rel="stylesheet" href="./styles.css">\n  </head>');
+await Bun.write(indexPath, indexHtml);
+console.log(`tailwind styles written to ${outdir}/styles.css`);
