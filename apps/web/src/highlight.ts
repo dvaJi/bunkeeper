@@ -1,44 +1,37 @@
-import hljs from "highlight.js/lib/core";
-import typescript from "highlight.js/lib/languages/typescript";
-import json from "highlight.js/lib/languages/json";
-import ini from "highlight.js/lib/languages/ini";
-import yaml from "highlight.js/lib/languages/yaml";
-import bash from "highlight.js/lib/languages/bash";
+import {
+  createHighlighter,
+  escapeHtml,
+  renderNodesToHtml,
+  renderTokens,
+} from "@tanstack/highlight/core";
+import { tsx } from "@tanstack/highlight/languages/tsx";
+import { json } from "@tanstack/highlight/languages/json";
+import { toml } from "@tanstack/highlight/languages/toml";
+import { yaml } from "@tanstack/highlight/languages/yaml";
+import { shell } from "@tanstack/highlight/languages/shell";
 
-hljs.registerLanguage("typescript", typescript);
-hljs.registerLanguage("json", json);
-hljs.registerLanguage("ini", ini);
-hljs.registerLanguage("toml", ini);
-hljs.registerLanguage("yaml", yaml);
-hljs.registerLanguage("bash", bash);
-
-export function escapeHtml(text: string): string {
-  return text
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;");
-}
+const highlighter = createHighlighter({
+  languages: [tsx, json, toml, yaml, shell],
+  fallbackLanguage: "tsx",
+});
 
 export function inferLanguage(title?: string): string {
-  if (!title) return "typescript";
+  if (!title) return "tsx";
   if (title.endsWith(".json")) return "json";
   if (title.endsWith(".toml")) return "toml";
   if (title.endsWith(".yml") || title.endsWith(".yaml")) return "yaml";
-  if (title === "terminal" || title.endsWith(".sh")) return "bash";
-  return "typescript";
+  if (title === "terminal" || title.endsWith(".sh")) return "shell";
+  return "tsx";
 }
 
 export function highlight(code: string, lang: string): string {
-  const language = hljs.getLanguage(lang) ? lang : "typescript";
-  try {
-    return hljs.highlight(code, { language, ignoreIllegals: true }).value;
-  } catch {
-    return escapeHtml(code);
-  }
+  return highlighter.highlight(code, { lang }).html;
 }
 
-export function highlightLine(text: string, lang: string): string {
-  if (!text.trim()) return escapeHtml(text);
-  return highlight(text, lang);
+export function highlightLine(code: string, lang: string): string {
+  if (!code.trim()) return escapeHtml(code);
+  const { tokens } = highlighter.tokenize(code, { lang });
+  return renderNodesToHtml(renderTokens(tokens));
 }
+
+export { escapeHtml };

@@ -1,5 +1,6 @@
 import { describe, expect, test } from "bun:test";
 import { renderToStaticMarkup } from "react-dom/server";
+import { CodeBlock } from "../src/ui";
 import { App } from "../src/App";
 import { Demo } from "../src/demo";
 import { GettingStarted } from "../src/pages/getting-started";
@@ -28,6 +29,12 @@ describe("web pages render", () => {
 
   test("renders the demo", () => {
     expect(renderToStaticMarkup(<Demo />)).toContain("Without vs with");
+  });
+
+  test("code blocks emit TanStack Highlight classes", () => {
+    const html = renderToStaticMarkup(<CodeBlock title="x.ts">{"const port = 1;"}</CodeBlock>);
+    expect(html).toContain("th-code");
+    expect(html).toContain("th-keyword");
   });
 
   test("every route in the app map renders through App markup data", () => {

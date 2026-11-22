@@ -1,4 +1,15 @@
+import { readdirSync, rmSync } from "node:fs";
+import { join } from "node:path";
+
 const outdir = "./dist";
+
+try {
+  for (const entry of readdirSync(outdir)) {
+    rmSync(join(outdir, entry), { recursive: true, force: true });
+  }
+} catch {
+  // first build, nothing to clean
+}
 
 const result = await Bun.build({
   entrypoints: ["./index.html"],

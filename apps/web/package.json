@@ -9,7 +9,7 @@
     "deploy": "bun build.ts && alchemy deploy"
   },
   "dependencies": {
-    "highlight.js": "^11.12.0",
+    "@tanstack/highlight": "^1.2.12",
     "react": "^19.2.1",
     "react-dom": "^19.2.1"
   },
