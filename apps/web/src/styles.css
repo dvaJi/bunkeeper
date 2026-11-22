@@ -835,6 +835,58 @@ td code {
   color: #89ddff;
 }
 
+/* annotations */
+.th-line {
+  display: block;
+}
+
+.th-line--highlighted {
+  background: color-mix(in srgb, var(--accent) 12%, transparent);
+  box-shadow: inset 2px 0 var(--accent);
+}
+
+.th-line--inserted {
+  background: color-mix(in srgb, var(--green) 12%, transparent);
+  box-shadow: inset 2px 0 var(--green);
+}
+
+.th-line--deleted {
+  background: color-mix(in srgb, var(--red) 10%, transparent);
+  box-shadow: inset 2px 0 var(--red);
+}
+
+.th-line--error {
+  text-decoration: underline wavy var(--red);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 4px;
+}
+
+.th-line--focused {
+  opacity: 1;
+}
+
+.th-code:has(.th-line--focused) .th-line:not(.th-line--focused) {
+  opacity: 0.45;
+}
+
+.th-code--line-numbers .th-line::before {
+  content: attr(data-line);
+  display: inline-block;
+  width: 2.4ch;
+  margin-right: 16px;
+  text-align: right;
+  color: var(--dim);
+  opacity: 0.7;
+  user-select: none;
+}
+
+.th-decoration.is-error {
+  text-decoration: underline wavy var(--red);
+  text-decoration-thickness: 1.5px;
+  text-underline-offset: 4px;
+  cursor: help;
+}
+
 @keyframes demo-pop {
   0% {
     opacity: 0;

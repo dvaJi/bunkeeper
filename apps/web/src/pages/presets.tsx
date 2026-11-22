@@ -88,7 +88,7 @@ export function Presets() {
 
       <h2>Overriding</h2>
       <p>Both presets are ordinary oxlint-format configs. Extend one and set any rule after it:</p>
-      <CodeBlock title=".oxlintrc.json">{`{
+      <CodeBlock title=".oxlintrc.json" highlightLines={[4, 5]}>{`{
   "extends": ["./node_modules/bunkeeper/configs/recommended.json"],
   "rules": {
     "no-console": "off",

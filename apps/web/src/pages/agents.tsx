@@ -26,7 +26,7 @@ export function Agents() {
         init adds <Code>@interfere/landmines</Code> to devDependencies and extends your{" "}
         <Code>.oxlintrc.json</Code> with its recommended config. Manually:
       </p>
-      <CodeBlock title=".oxlintrc.json">{`{
+      <CodeBlock title=".oxlintrc.json" highlightLines={[4]}>{`{
   "extends": [
     "./node_modules/bunkeeper/configs/recommended.json",
     "./node_modules/@interfere/landmines/configs/recommended.json"

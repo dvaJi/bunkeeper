@@ -3,6 +3,7 @@ import {
   escapeHtml,
   renderNodesToHtml,
   renderTokens,
+  type HighlightDecoration,
 } from "@tanstack/highlight/core";
 import { tsx } from "@tanstack/highlight/languages/tsx";
 import { json } from "@tanstack/highlight/languages/json";
@@ -24,8 +25,25 @@ export function inferLanguage(title?: string): string {
   return "tsx";
 }
 
-export function highlight(code: string, lang: string): string {
-  return highlighter.highlight(code, { lang }).html;
+export type LineSelection = number | [number, number];
+
+export function lineDecorations(
+  selections: ReadonlyArray<LineSelection>,
+  className: string,
+): HighlightDecoration[] {
+  return selections.map((selection) => ({
+    lines: Array.isArray(selection) ? selection : selection,
+    className,
+  }));
+}
+
+export function highlight(
+  code: string,
+  lang: string,
+  decorations?: HighlightDecoration[],
+  lineNumbers?: boolean,
+): string {
+  return highlighter.highlight(code, { lang, decorations, lineNumbers }).html;
 }
 
 export function highlightLine(code: string, lang: string): string {

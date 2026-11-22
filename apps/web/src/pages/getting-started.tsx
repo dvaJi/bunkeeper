@@ -49,7 +49,7 @@ bunx bunkeeper init --yes --strict --type-aware`}</CodeBlock>
       </p>
 
       <h3>bunfig.toml</h3>
-      <CodeBlock>{`# bunkeeper:start
+      <CodeBlock highlightLines={[5, 6]} lineNumbers>{`# bunkeeper:start
 [fmt]
 printWidth = 100
 

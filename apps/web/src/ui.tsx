@@ -1,5 +1,10 @@
 import type { ReactNode } from "react";
-import { highlight, inferLanguage } from "./highlight";
+import {
+  highlight,
+  inferLanguage,
+  lineDecorations,
+  type LineSelection,
+} from "./highlight";
 
 export function Link({
   to,
@@ -21,14 +26,56 @@ export function Code({ children }: { children: ReactNode }) {
   return <code className="inline-code">{children}</code>;
 }
 
-export function CodeBlock({ title, children }: { title?: string; children: string }) {
+type Annotation = { range: [number, number]; message?: string };
+
+export function CodeBlock({
+  title,
+  children,
+  highlightLines,
+  ins,
+  del,
+  focus,
+  error,
+  lineNumbers,
+  ranges,
+}: {
+  title?: string;
+  children: string;
+  highlightLines?: LineSelection[];
+  ins?: LineSelection[];
+  del?: LineSelection[];
+  focus?: LineSelection[];
+  error?: LineSelection[];
+  lineNumbers?: boolean;
+  ranges?: Annotation[];
+}) {
   const lang = inferLanguage(title);
+  const decorations = [
+    ...lineDecorations(highlightLines ?? [], "th-line--highlighted"),
+    ...lineDecorations(ins ?? [], "th-line--inserted"),
+    ...lineDecorations(del ?? [], "th-line--deleted"),
+    ...lineDecorations(focus ?? [], "th-line--focused"),
+    ...lineDecorations(error ?? [], "th-line--error"),
+    ...(ranges ?? []).map((annotation) => ({
+      range: annotation.range,
+      className: "th-decoration is-error",
+      data: annotation.message ? { message: annotation.message } : undefined,
+    })),
+  ];
   return (
     <div className="code-block">
       {title ? <div className="code-title">{title}</div> : null}
-      <pre>
-        <code dangerouslySetInnerHTML={{ __html: highlight(children.trim(), lang) }} />
-      </pre>
+      <div
+        className="code-body"
+        dangerouslySetInnerHTML={{
+          __html: highlight(
+            children.trim(),
+            lang,
+            decorations.length > 0 ? decorations : undefined,
+            lineNumbers,
+          ),
+        }}
+      />
     </div>
   );
 }
