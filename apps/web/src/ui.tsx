@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { highlight, inferLanguage } from "./highlight";
 
 export function Link({
   to,
@@ -21,11 +22,12 @@ export function Code({ children }: { children: ReactNode }) {
 }
 
 export function CodeBlock({ title, children }: { title?: string; children: string }) {
+  const lang = inferLanguage(title);
   return (
     <div className="code-block">
       {title ? <div className="code-title">{title}</div> : null}
       <pre>
-        <code>{children.trim()}</code>
+        <code dangerouslySetInnerHTML={{ __html: highlight(children.trim(), lang) }} />
       </pre>
     </div>
   );
@@ -41,7 +43,7 @@ export function Terminal({ children }: { children: string }) {
         <span className="terminal-label">terminal</span>
       </div>
       <pre>
-        <code>{children.trim()}</code>
+        <code dangerouslySetInnerHTML={{ __html: highlight(children.trim(), "bash") }} />
       </pre>
     </div>
   );

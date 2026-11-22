@@ -766,6 +766,64 @@ td code {
   animation: demo-pop 0.35s ease both;
 }
 
+/* syntax highlighting (highlight.js classes, tuned to the theme) */
+.hljs-keyword,
+.hljs-selector-tag,
+.hljs-literal {
+  color: #c792ea;
+}
+
+.hljs-string,
+.hljs-regexp,
+.hljs-symbol {
+  color: #a3d9a5;
+}
+
+.hljs-number,
+.hljs-meta {
+  color: var(--accent);
+}
+
+.hljs-title,
+.hljs-title.function_,
+.hljs-title.class_ {
+  color: #82aaff;
+}
+
+.hljs-attr,
+.hljs-attribute,
+.hljs-property {
+  color: #7fdbca;
+}
+
+.hljs-built_in,
+.hljs-type,
+.hljs-class {
+  color: #ffcb6b;
+}
+
+.hljs-comment,
+.hljs-quote {
+  color: #6b7080;
+  font-style: italic;
+}
+
+.hljs-deletion {
+  color: var(--red);
+}
+
+.hljs-addition {
+  color: var(--green);
+}
+
+.hljs-emphasis {
+  font-style: italic;
+}
+
+.hljs-strong {
+  font-weight: 700;
+}
+
 @keyframes demo-pop {
   0% {
     opacity: 0;

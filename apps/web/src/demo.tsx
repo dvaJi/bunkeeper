@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { highlightLine } from "./highlight";
 
 type CodeLine = { text: string; kind?: "bad" | "good" };
 
@@ -267,7 +268,12 @@ export function Demo() {
                 <span className="gutter">
                   {line.kind === "bad" ? "−" : line.kind === "good" ? "+" : " "}
                 </span>
-                <span className="line-text">{line.text || " "}</span>
+                <span
+                  className="line-text"
+                  dangerouslySetInnerHTML={{
+                    __html: highlightLine(line.text || " ", "typescript"),
+                  }}
+                />
               </div>
             ))}
           </pre>
