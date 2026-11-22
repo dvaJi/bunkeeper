@@ -242,11 +242,77 @@ a:hover {
 .code-block pre,
 .terminal pre {
   padding: 14px 16px;
-  overflow-x: auto;
+  overflow: auto;
   font-family: var(--mono);
   font-size: 13.5px;
   line-height: 1.6;
   color: #d7dae0;
+}
+
+/* better scrolls — thin themed bars, contained overscroll, height caps */
+.terminal pre,
+.code-block pre,
+.code-block .th-code,
+.demo-code,
+.lint-out {
+  max-height: 360px;
+  overflow: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: #2f3136 transparent;
+}
+
+.demo-code {
+  max-height: 300px;
+}
+
+.lint-out {
+  max-height: 300px;
+}
+
+.terminal pre::-webkit-scrollbar,
+.code-block pre::-webkit-scrollbar,
+.code-block .th-code::-webkit-scrollbar,
+.demo-code::-webkit-scrollbar,
+.lint-out::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.terminal pre::-webkit-scrollbar-track,
+.code-block pre::-webkit-scrollbar-track,
+.code-block .th-code::-webkit-scrollbar-track,
+.demo-code::-webkit-scrollbar-track,
+.lint-out::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.terminal pre::-webkit-scrollbar-thumb,
+.code-block pre::-webkit-scrollbar-thumb,
+.code-block .th-code::-webkit-scrollbar-thumb,
+.demo-code::-webkit-scrollbar-thumb,
+.lint-out::-webkit-scrollbar-thumb {
+  background: #2f3136;
+  border-radius: 999px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+
+.terminal pre::-webkit-scrollbar-thumb:hover,
+.code-block pre::-webkit-scrollbar-thumb:hover,
+.code-block .th-code::-webkit-scrollbar-thumb:hover,
+.demo-code::-webkit-scrollbar-thumb:hover,
+.lint-out::-webkit-scrollbar-thumb:hover {
+  background: #4a4d55;
+  background-clip: padding-box;
+}
+
+.terminal pre::-webkit-scrollbar-corner,
+.code-block pre::-webkit-scrollbar-corner,
+.code-block .th-code::-webkit-scrollbar-corner,
+.demo-code::-webkit-scrollbar-corner,
+.lint-out::-webkit-scrollbar-corner {
+  background: transparent;
 }
 
 .inline-code {
