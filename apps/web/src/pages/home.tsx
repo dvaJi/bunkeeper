@@ -27,11 +27,15 @@ export function Home() {
 ✓ created AGENTS.md with the bunkeeper section`}</Terminal>
         <div className="hero-actions">
           <Button asChild>
-            <Link to="/docs/getting-started">Get started</Link>
+            <Link to="/docs/getting-started">
+              Get started
+              <ArrowRightIcon className="size-4" />
+            </Link>
           </Button>
           <Button variant="secondary" asChild>
             <a href="https://github.com/dvaJi/bunkeeper" target="_blank" rel="noreferrer">
               GitHub
+              <ArrowUpRightIcon className="size-4" />
             </a>
           </Button>
         </div>
@@ -88,6 +92,40 @@ export function Home() {
         </p>
       </section>
     </div>
+  );
+}
+
+function ArrowRightIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      viewBox="0 0 16 16"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.75"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={className}
+      aria-hidden="true"
+    >
+      <path d="M2.5 8h11M9.5 4l4 4-4 4" />
+    </svg>
+  );
+}
+
+function ArrowUpRightIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      viewBox="0 0 16 16"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.75"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={className}
+      aria-hidden="true"
+    >
+      <path d="M4 12L12 4M5.5 4H12v6.5" />
+    </svg>
   );
 }
 
