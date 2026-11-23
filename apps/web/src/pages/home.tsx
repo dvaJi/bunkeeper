@@ -1,6 +1,6 @@
-import { Link, Terminal, Table } from "../ui";
+import { Terminal, Table } from "../ui";
 import { Demo } from "../demo";
-import { Button } from "../components/forme/button/button";
+import { ButtonLink } from "../components/forme/button/button";
 import { Card, CardDescription, CardHeader, CardTitle } from "../components/forme/card/card";
 
 export function Home() {
@@ -26,18 +26,18 @@ export function Home() {
 ✓ created .github/workflows/check.yml (bun canary + fmt, lint, test)
 ✓ created AGENTS.md with the bunkeeper section`}</Terminal>
         <div className="hero-actions">
-          <Button asChild>
-            <Link to="/docs/getting-started">
-              Get started
-              <ArrowRightIcon className="size-4" />
-            </Link>
-          </Button>
-          <Button variant="secondary" asChild>
-            <a href="https://github.com/dvaJi/bunkeeper" target="_blank" rel="noreferrer">
-              GitHub
-              <ArrowUpRightIcon className="size-4" />
-            </a>
-          </Button>
+          <ButtonLink trailingIcon={ArrowRightIcon} href="#/docs/getting-started">
+            Get started
+          </ButtonLink>
+          <ButtonLink
+            variant="secondary"
+            trailingIcon={ArrowUpRightIcon}
+            href="https://github.com/dvaJi/bunkeeper"
+            target="_blank"
+            rel="noreferrer"
+          >
+            GitHub
+          </ButtonLink>
         </div>
       </section>
 

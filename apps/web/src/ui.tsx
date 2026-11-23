@@ -12,13 +12,15 @@ export function Link({
   to,
   children,
   className,
+  "aria-current": ariaCurrent,
 }: {
   to: string;
   children: ReactNode;
   className?: string;
+  "aria-current"?: "page";
 }) {
   return (
-    <a href={`#${to}`} className={className}>
+    <a href={`#${to}`} className={className} aria-current={ariaCurrent}>
       {children}
     </a>
   );
@@ -26,6 +28,41 @@ export function Link({
 
 export function Code({ children }: { children: ReactNode }) {
   return <code className="inline-code">{children}</code>;
+}
+
+function CopyIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      viewBox="0 0 16 16"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={className}
+      aria-hidden="true"
+    >
+      <rect x="5.5" y="5.5" width="8" height="8" rx="1.5" />
+      <path d="M10.5 5.5V4A1.5 1.5 0 0 0 9 2.5H4A1.5 1.5 0 0 0 2.5 4v5A1.5 1.5 0 0 0 4 10.5h1.5" />
+    </svg>
+  );
+}
+
+function CopiedIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      viewBox="0 0 16 16"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.75"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={`text-success ${className ?? ""}`}
+      aria-hidden="true"
+    >
+      <path d="M3 8.5l3.2 3.2L13 5" />
+    </svg>
+  );
 }
 
 function CopyButton({ text }: { text: string }) {
@@ -38,15 +75,15 @@ function CopyButton({ text }: { text: string }) {
           <Button
             variant="ghost"
             size="xs"
-            aria-label="Copy code"
+            iconOnly
+            leadingIcon={copied ? CopiedIcon : CopyIcon}
+            aria-label={copied ? "Copied" : "Copy code"}
             onClick={async () => {
               await navigator.clipboard.writeText(text);
               setCopied(true);
               setTimeout(() => setCopied(false), 1500);
             }}
-          >
-            {copied ? "copied ✓" : "copy"}
-          </Button>
+          />
         </TooltipTrigger>
         <TooltipContent>{copied ? "Copied to clipboard" : "Copy to clipboard"}</TooltipContent>
       </Tooltip>
@@ -95,7 +132,9 @@ export function CodeBlock({
     <div className="code-block">
       <div className="code-bar">
         {title ? <div className="code-title">{title}</div> : <span />}
-        <CopyButton text={code} />
+        <span className="code-copy">
+          <CopyButton text={code} />
+        </span>
       </div>
       <div
         className="code-body"
@@ -188,7 +227,8 @@ const NAV = [
   { to: "/docs/cli", label: "CLI" },
 ];
 
-export function DocNav({ current }: { current?: string }) {
+export function DocNav() {
+  const current = typeof window === "undefined" ? undefined : window.location.hash.slice(1) || "/";
   return (
     <nav className="doc-nav">
       {NAV.map((item) => (
@@ -196,6 +236,7 @@ export function DocNav({ current }: { current?: string }) {
           key={item.to}
           to={item.to}
           className={`doc-nav-link${current === item.to ? " active" : ""}`}
+          aria-current={current === item.to ? "page" : undefined}
         >
           {item.label}
         </Link>

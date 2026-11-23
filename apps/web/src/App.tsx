@@ -66,6 +66,7 @@ function Header({ route, onOpenMenu }: { route: string; onOpenMenu: () => void }
               key={page.to}
               href={`#${page.to}`}
               className={route === page.to ? "active" : undefined}
+              aria-current={route === page.to ? "page" : undefined}
             >
               {page.label}
             </a>
