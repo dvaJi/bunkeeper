@@ -47,4 +47,14 @@ const indexPath = join(outdir, "index.html");
 let indexHtml = await Bun.file(indexPath).text();
 indexHtml = indexHtml.replace("</head>", '<link rel="stylesheet" href="./styles.css">\n  </head>');
 await Bun.write(indexPath, indexHtml);
+
+await Bun.write(
+  join(outdir, "_headers"),
+  `/
+  Cache-Control: no-cache
+
+/index.html
+  Cache-Control: no-cache
+`,
+);
 console.log(`tailwind styles written to ${outdir}/styles.css`);

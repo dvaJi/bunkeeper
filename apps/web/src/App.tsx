@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react";
+import { Search } from "lucide-react";
+import { Button, ButtonLink } from "./components/forme/button/button";
 import {
   CommandMenu,
   CommandMenuEmpty,
@@ -9,7 +11,13 @@ import {
   CommandMenuSeparator,
 } from "./components/forme/command-menu/command-menu";
 import { Kbd } from "./components/forme/kbd/kbd";
-import { TooltipProvider } from "./components/forme/tooltip/tooltip";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "./components/forme/tooltip/tooltip";
+import { GitHubIcon } from "./icons";
 import { Link } from "./ui";
 import { Home } from "./pages/home";
 import { GettingStarted } from "./pages/getting-started";
@@ -71,19 +79,27 @@ function Header({ route, onOpenMenu }: { route: string; onOpenMenu: () => void }
               {page.label}
             </a>
           ))}
-          <a href="https://github.com/dvaJi/bunkeeper" target="_blank" rel="noreferrer">
-            GitHub ↗
-          </a>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <ButtonLink
+                variant="ghost"
+                size="small"
+                iconOnly
+                leadingIcon={GitHubIcon}
+                href="https://github.com/dvaJi/bunkeeper"
+                target="_blank"
+                rel="noreferrer"
+                aria-label="GitHub repository"
+              />
+            </TooltipTrigger>
+            <TooltipContent>GitHub repository ↗</TooltipContent>
+          </Tooltip>
         </nav>
-        <button
-          type="button"
-          className="menu-trigger"
-          onClick={onOpenMenu}
-          aria-label="Search docs"
-        >
+        <Button variant="secondary" size="small" onClick={onOpenMenu} aria-label="Search docs">
+          <Search className="size-4" />
           Search
           <Kbd>⌘K</Kbd>
-        </button>
+        </Button>
       </div>
     </header>
   );

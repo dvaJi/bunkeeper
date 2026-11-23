@@ -1,7 +1,19 @@
+import type { ComponentType } from "react";
+import {
+  ArrowRight,
+  ArrowUpRight,
+  Bot,
+  Package,
+  Repeat2,
+  Sparkles,
+  Stethoscope,
+  Wheat,
+} from "lucide-react";
 import { Terminal, Table } from "../ui";
 import { Demo } from "../demo";
 import { ButtonLink } from "../components/forme/button/button";
 import { Card, CardDescription, CardHeader, CardTitle } from "../components/forme/card/card";
+import { GitHubIcon } from "../icons";
 
 export function Home() {
   return (
@@ -26,12 +38,14 @@ export function Home() {
 ✓ created .github/workflows/check.yml (bun canary + fmt, lint, test)
 ✓ created AGENTS.md with the bunkeeper section`}</Terminal>
         <div className="hero-actions">
-          <ButtonLink trailingIcon={ArrowRightIcon} href="#/docs/getting-started">
+          <ButtonLink size="large" trailingIcon={ArrowRight} href="#/docs/getting-started">
             Get started
           </ButtonLink>
           <ButtonLink
+            size="large"
             variant="secondary"
-            trailingIcon={ArrowUpRightIcon}
+            leadingIcon={GitHubIcon}
+            trailingIcon={ArrowUpRight}
             href="https://github.com/dvaJi/bunkeeper"
             target="_blank"
             rel="noreferrer"
@@ -45,32 +59,32 @@ export function Home() {
 
       <section className="features">
         <Feature
-          icon="⚡"
+          icon={Sparkles}
           title="Zero-config by design"
           body="Curated categories and rules tuned for modern TypeScript. Works out of the box, and every part is overridable in files you already own."
         />
         <Feature
-          icon="🍞"
+          icon={Wheat}
           title="Bun-native API rules"
           body="Six custom rules keep code honest about its runtime: Bun.file over node:fs, Bun.env over process.env, no dotenv, global fetch, Bun.sleep."
         />
         <Feature
-          icon="🤖"
+          icon={Bot}
           title="Agentic loop"
           body="Rule messages say what to do instead, CI fails on warnings, and init writes an AGENTS.md section so models fix what they trip."
         />
         <Feature
-          icon="📦"
+          icon={Package}
           title="Zero dependencies"
           body="The preset adds no lint or format package. If Bun ships a rule natively, you get it on upgrade — no package bump."
         />
         <Feature
-          icon="🔁"
+          icon={Repeat2}
           title="Re-runnable"
           body="init is idempotent: marked blocks are replaced, never duplicated. Your configs are merged, never clobbered."
         />
         <Feature
-          icon="🚀"
+          icon={Stethoscope}
           title="Doctor included"
           body="bunkeeper doctor reports exactly what your bun build supports — fmt, check, lint — and how to fix the gaps."
         />
@@ -95,45 +109,21 @@ export function Home() {
   );
 }
 
-function ArrowRightIcon({ className }: { className?: string }) {
-  return (
-    <svg
-      viewBox="0 0 16 16"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.75"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      className={className}
-      aria-hidden="true"
-    >
-      <path d="M2.5 8h11M9.5 4l4 4-4 4" />
-    </svg>
-  );
-}
-
-function ArrowUpRightIcon({ className }: { className?: string }) {
-  return (
-    <svg
-      viewBox="0 0 16 16"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.75"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      className={className}
-      aria-hidden="true"
-    >
-      <path d="M4 12L12 4M5.5 4H12v6.5" />
-    </svg>
-  );
-}
-
-function Feature({ icon, title, body }: { icon: string; title: string; body: string }) {
+function Feature({
+  icon: Icon,
+  title,
+  body,
+}: {
+  icon: ComponentType<{ className?: string }>;
+  title: string;
+  body: string;
+}) {
   return (
     <Card>
       <CardHeader>
-        <div className="feature-icon">{icon}</div>
+        <div className="feature-icon">
+          <Icon className="size-5" />
+        </div>
         <CardTitle>{title}</CardTitle>
         <CardDescription>{body}</CardDescription>
       </CardHeader>

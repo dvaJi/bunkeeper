@@ -25,7 +25,7 @@ import { cloneElement } from "react";
 import { cn } from "../lib/cn";
 
 export type ButtonVariant = "primary" | "secondary" | "ghost" | "danger";
-export type ButtonSize = "medium" | "small" | "xs";
+export type ButtonSize = "large" | "medium" | "small" | "xs";
 
 /**
  * An icon for a button's leading or trailing slot.
@@ -126,6 +126,7 @@ const base =
   "relative inline-flex items-center justify-center gap-0.5 overflow-hidden whitespace-nowrap font-sans cursor-pointer select-none outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-ring disabled:cursor-not-allowed aria-disabled:cursor-not-allowed";
 
 const sizes = {
+  large: "h-11 rounded-md px-5 text-body-semibold",
   medium: "h-9 rounded-md p-2 text-body-medium",
   small: "h-8 rounded-md px-2 py-1.5 text-body-medium",
   xs: "h-6 rounded-sm px-2 text-caption-1-semibold",
@@ -140,6 +141,7 @@ const sizes = {
  * size or the padding ever changes.
  */
 const iconOnlySizes = {
+  large: "size-11 p-0",
   medium: "size-9 p-0",
   small: "size-8 p-0",
   xs: "size-6 p-0",
@@ -151,6 +153,7 @@ const iconOnlySizes = {
  * 24px xs button takes 12px, matching its 12px label.
  */
 const icons = {
+  large: "size-5 shrink-0",
   medium: "size-4 shrink-0",
   small: "size-4 shrink-0",
   xs: "size-3 shrink-0",
@@ -171,6 +174,8 @@ const icons = {
  * slot's, so a bare `<Search />` is not Lucide's 24px default in a 36px button.
  */
 const labels = {
+  large:
+    "inline-flex items-center justify-center gap-2 px-1.5 shrink-0 [&>svg]:shrink-0 [&>svg:not([class*='size-')]:size-5",
   medium:
     "inline-flex items-center justify-center gap-1.5 px-1 shrink-0 [&>svg]:shrink-0 [&>svg:not([class*='size-'])]:size-4",
   small:
