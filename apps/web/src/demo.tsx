@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Pause, Play } from "lucide-react";
 import { highlightLine } from "./highlight";
 import { SegmentedControl } from "./components/forme/segmented-control/segmented-control";
 import { Button } from "./components/forme/button/button";
@@ -213,10 +214,11 @@ export function Demo() {
             variant="ghost"
             size="xs"
             aria-pressed={auto}
-            title={auto ? "pause the loop" : "resume the loop"}
+            title={auto ? "Pause the loop" : "Resume the loop"}
+            leadingIcon={auto ? Pause : Play}
             onClick={() => setAuto((current) => !current)}
           >
-            {auto ? "⏸ auto" : "▶ auto"}
+            Auto
           </Button>
         </div>
       </div>

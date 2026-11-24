@@ -37,6 +37,12 @@ describe("web pages render", () => {
     expect(html).toContain("th-keyword");
   });
 
+  test("an untitled code block highlights with the lang prop", () => {
+    const html = renderToStaticMarkup(<CodeBlock lang="toml">{"# start\n[fmt]"}</CodeBlock>);
+    expect(html).toContain("th-code--toml");
+    expect(html).toContain("th-comment");
+  });
+
   test("every route in the app map renders through App markup data", () => {
     for (const route of Object.keys(PAGES)) {
       expect(typeof App).toBe("function");

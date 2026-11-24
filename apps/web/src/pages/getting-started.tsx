@@ -41,7 +41,7 @@ bunx bunkeeper init --yes --strict --type-aware`}</CodeBlock>
       <h2>What it writes</h2>
 
       <h3>.oxlintrc.json</h3>
-      <CodeBlock>{`{
+      <CodeBlock lang="json">{`{
   "extends": ["./node_modules/bunkeeper/configs/recommended.json"]
 }`}</CodeBlock>
       <p>
@@ -49,7 +49,7 @@ bunx bunkeeper init --yes --strict --type-aware`}</CodeBlock>
       </p>
 
       <h3>bunfig.toml</h3>
-      <CodeBlock highlightLines={[5, 6]} lineNumbers>{`# bunkeeper:start
+      <CodeBlock lang="toml" highlightLines={[5, 6]} lineNumbers>{`# bunkeeper:start
 [fmt]
 printWidth = 100
 
@@ -67,7 +67,7 @@ plugins = ["./node_modules/bunkeeper/plugin/index.js"]
       <p>Everything between the markers is bunkeeper's — re-runs replace it, never duplicate it.</p>
 
       <h3>package.json scripts</h3>
-      <CodeBlock>{`{
+      <CodeBlock lang="json">{`{
   "lint": "bun lint --no-script",
   "lint:fix": "bun lint --fix --no-script",
   "fmt": "bun fmt",

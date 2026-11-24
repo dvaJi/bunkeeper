@@ -5,30 +5,46 @@ import {
   Bot,
   Package,
   Repeat2,
-  Sparkles,
+  SlidersHorizontal,
   Stethoscope,
   Wheat,
 } from "lucide-react";
 import { Terminal, Table } from "../ui";
 import { Demo } from "../demo";
 import { ButtonLink } from "../components/forme/button/button";
-import { Card, CardDescription, CardHeader, CardTitle } from "../components/forme/card/card";
 import { GitHubIcon } from "../icons";
 
 export function Home() {
   return (
     <div className="home">
       <section className="hero">
-        <div className="hero-badge">🥐 Ultracite for the Bun toolchain</div>
-        <h1 className="hero-title">
-          The zero-config lint and format preset for <span className="accent">Bun</span>
-        </h1>
-        <p className="hero-sub">
-          One command wires up <code>bun lint</code>, <code>bun fmt</code> and bun-native API rules.
-          No ESLint, no Prettier, no oxlint, no Biome, no config to learn. Bun is the toolchain —
-          bunkeeper makes it strict.
-        </p>
-        <Terminal>{`bunx bunkeeper init
+        <div className="hero-copy">
+          <p className="hero-eyebrow">Ultracite for the Bun toolchain</p>
+          <h1 className="hero-title">The zero-config lint and format preset for Bun</h1>
+          <p className="hero-sub">
+            One command wires up <code>bun lint</code>, <code>bun fmt</code> and bun-native API
+            rules. No ESLint, no Prettier, no oxlint, no Biome, no config to learn. Bun is the
+            toolchain — bunkeeper makes it strict.
+          </p>
+          <div className="hero-actions">
+            <ButtonLink size="large" trailingIcon={ArrowRight} href="#/docs/getting-started">
+              Get started
+            </ButtonLink>
+            <ButtonLink
+              size="large"
+              variant="secondary"
+              leadingIcon={GitHubIcon}
+              trailingIcon={ArrowUpRight}
+              href="https://github.com/dvaJi/bunkeeper"
+              target="_blank"
+              rel="noreferrer"
+            >
+              GitHub
+            </ButtonLink>
+          </div>
+        </div>
+        <div className="hero-visual">
+          <Terminal>{`bunx bunkeeper init
 
 ✓ bun 1.4.6-canary has bun lint
 ✓ installed bunkeeper as a devDependency
@@ -37,21 +53,6 @@ export function Home() {
 ✓ added scripts: lint, lint:fix, fmt, fmt:check, check
 ✓ created .github/workflows/check.yml (bun canary + fmt, lint, test)
 ✓ created AGENTS.md with the bunkeeper section`}</Terminal>
-        <div className="hero-actions">
-          <ButtonLink size="large" trailingIcon={ArrowRight} href="#/docs/getting-started">
-            Get started
-          </ButtonLink>
-          <ButtonLink
-            size="large"
-            variant="secondary"
-            leadingIcon={GitHubIcon}
-            trailingIcon={ArrowUpRight}
-            href="https://github.com/dvaJi/bunkeeper"
-            target="_blank"
-            rel="noreferrer"
-          >
-            GitHub
-          </ButtonLink>
         </div>
       </section>
 
@@ -59,7 +60,7 @@ export function Home() {
 
       <section className="features">
         <Feature
-          icon={Sparkles}
+          icon={SlidersHorizontal}
           title="Zero-config by design"
           body="Curated categories and rules tuned for modern TypeScript. Works out of the box, and every part is overridable in files you already own."
         />
@@ -114,19 +115,19 @@ function Feature({
   title,
   body,
 }: {
-  icon: ComponentType<{ className?: string }>;
+  icon: ComponentType<{ className?: string; strokeWidth?: number }>;
   title: string;
   body: string;
 }) {
   return (
-    <Card>
-      <CardHeader>
-        <div className="feature-icon">
-          <Icon className="size-5" />
-        </div>
-        <CardTitle>{title}</CardTitle>
-        <CardDescription>{body}</CardDescription>
-      </CardHeader>
-    </Card>
+    <div className="feature">
+      <span className="feature-icon">
+        <Icon className="size-[18px]" strokeWidth={1.5} />
+      </span>
+      <div>
+        <h3>{title}</h3>
+        <p>{body}</p>
+      </div>
+    </div>
   );
 }

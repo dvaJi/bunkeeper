@@ -1,5 +1,5 @@
 import { useState, type ReactNode } from "react";
-import { Check, Copy } from "lucide-react";
+import { Check, Copy, Info } from "lucide-react";
 import { highlight, inferLanguage, lineDecorations, type LineSelection } from "./highlight";
 import { Button } from "./components/forme/button/button";
 import {
@@ -64,6 +64,7 @@ type Annotation = { range: [number, number]; message?: string };
 
 export function CodeBlock({
   title,
+  lang: langProp,
   children,
   highlightLines,
   ins,
@@ -74,6 +75,8 @@ export function CodeBlock({
   ranges,
 }: {
   title?: string;
+  /** Language when there is no title to infer it from: "json", "toml", "yaml", "shell", "tsx" */
+  lang?: string;
   children: string;
   highlightLines?: LineSelection[];
   ins?: LineSelection[];
@@ -83,7 +86,7 @@ export function CodeBlock({
   lineNumbers?: boolean;
   ranges?: Annotation[];
 }) {
-  const lang = inferLanguage(title);
+  const lang = langProp ?? inferLanguage(title);
   const code = children.trim();
   const decorations = [
     ...lineDecorations(highlightLines ?? [], "th-line--highlighted"),
@@ -217,7 +220,7 @@ export function DocNav() {
 export function Callout({ children }: { children: ReactNode }) {
   return (
     <div className="callout">
-      <span className="callout-icon">ℹ</span>
+      <Info className="callout-icon" size={16} strokeWidth={1.5} aria-hidden />
       <div>{children}</div>
     </div>
   );

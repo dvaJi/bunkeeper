@@ -66,7 +66,7 @@ function Header({ route, onOpenMenu }: { route: string; onOpenMenu: () => void }
     <header className="site-header">
       <div className="container header-inner">
         <Link to="/" className="brand">
-          <span className="brand-mark">🍞</span> bunkeeper
+          bunkeeper
         </Link>
         <nav className="top-nav">
           {PAGES.slice(1).map((page) => (
@@ -92,7 +92,7 @@ function Header({ route, onOpenMenu }: { route: string; onOpenMenu: () => void }
                 aria-label="GitHub repository"
               />
             </TooltipTrigger>
-            <TooltipContent>GitHub repository ↗</TooltipContent>
+            <TooltipContent>GitHub repository</TooltipContent>
           </Tooltip>
         </nav>
         <Button variant="secondary" size="small" onClick={onOpenMenu} aria-label="Search docs">
@@ -165,7 +165,7 @@ export function App() {
                 value="GitHub repository"
                 onSelect={() => window.open("https://github.com/dvaJi/bunkeeper", "_blank")}
               >
-                GitHub repository ↗
+                GitHub repository
               </CommandMenuItem>
             </CommandMenuGroup>
           </CommandMenuList>
