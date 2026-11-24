@@ -99,16 +99,16 @@ plugins = ["./node_modules/bunkeeper/plugin/index.js"]
 
 ## Custom rules
 
-Six rules enforce bun-idiomatic APIs, loaded as a zero-dependency plugin through `bun lint`'s plugin API. Each rule's message links to a doc page in [`docs/rules/`](docs/rules/).
+Six rules enforce bun-idiomatic APIs, loaded as a zero-dependency plugin through `bun lint`'s plugin API. Each rule's message links to a doc page under [`docs/rules/`](https://github.com/dvaJi/bunkeeper/blob/HEAD/packages/bunkeeper/docs/rules).
 
-| Rule                                                           | Fixes                                                  | Default |
-| -------------------------------------------------------------- | ------------------------------------------------------ | ------- |
-| [`bunkeeper/no-dotenv`](docs/rules/no-dotenv.md)               | Bun loads `.env` files automatically — delete dotenv   | error   |
-| [`bunkeeper/no-process-env`](docs/rules/no-process-env.md)     | Use `Bun.env`                                          | warn    |
-| [`bunkeeper/prefer-bun-file`](docs/rules/prefer-bun-file.md)   | `fs.readFile`/`readFileSync` → `Bun.file()`            | warn    |
-| [`bunkeeper/prefer-bun-write`](docs/rules/prefer-bun-write.md) | `fs.writeFile`/`writeFileSync` → `Bun.write()`         | warn    |
-| [`bunkeeper/no-node-fetch`](docs/rules/no-node-fetch.md)       | `fetch` is a global — delete node-fetch/undici         | warn    |
-| [`bunkeeper/prefer-bun-sleep`](docs/rules/prefer-bun-sleep.md) | promise-wrapped `setTimeout` → `Bun.sleep()` (autofix) | warn    |
+| Rule                                                                                                                           | Fixes                                                  | Default |
+| ------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------ | ------- |
+| [`bunkeeper/no-dotenv`](https://github.com/dvaJi/bunkeeper/blob/HEAD/packages/bunkeeper/docs/rules/no-dotenv.md)               | Bun loads `.env` files automatically — delete dotenv   | error   |
+| [`bunkeeper/no-process-env`](https://github.com/dvaJi/bunkeeper/blob/HEAD/packages/bunkeeper/docs/rules/no-process-env.md)     | Use `Bun.env`                                          | warn    |
+| [`bunkeeper/prefer-bun-file`](https://github.com/dvaJi/bunkeeper/blob/HEAD/packages/bunkeeper/docs/rules/prefer-bun-file.md)   | `fs.readFile`/`readFileSync` → `Bun.file()`            | warn    |
+| [`bunkeeper/prefer-bun-write`](https://github.com/dvaJi/bunkeeper/blob/HEAD/packages/bunkeeper/docs/rules/prefer-bun-write.md) | `fs.writeFile`/`writeFileSync` → `Bun.write()`         | warn    |
+| [`bunkeeper/no-node-fetch`](https://github.com/dvaJi/bunkeeper/blob/HEAD/packages/bunkeeper/docs/rules/no-node-fetch.md)       | `fetch` is a global — delete node-fetch/undici         | warn    |
+| [`bunkeeper/prefer-bun-sleep`](https://github.com/dvaJi/bunkeeper/blob/HEAD/packages/bunkeeper/docs/rules/prefer-bun-sleep.md) | promise-wrapped `setTimeout` → `Bun.sleep()` (autofix) | warn    |
 
 Tracking fs through aliases is supported: `import fs from "node:fs"`, `import * as fs`, `const fs = require("node:fs")`, and named imports like `import { readFileSync } from "node:fs"` all get caught.
 

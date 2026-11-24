@@ -1,4 +1,4 @@
-const DOC_BASE = "https://github.com/dvaJi/bunkeeper/blob/main/docs/rules";
+const DOC_BASE = "https://github.com/dvaJi/bunkeeper/blob/HEAD/packages/bunkeeper/docs/rules";
 
 const FS_SOURCES = new Set(["node:fs", "fs", "node:fs/promises", "fs/promises"]);
 const FS_READ_METHODS = new Set(["readFile", "readFileSync"]);

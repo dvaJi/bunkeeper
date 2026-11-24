@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Documentation
+    url: https://bunkeeper.aipurrjects.xyz
+    about: Docs site — getting started, CLI, presets, agent rules.
+  - name: Rule docs
+    url: https://github.com/dvaJi/bunkeeper/tree/HEAD/packages/bunkeeper/docs/rules
+    about: One page per bunkeeper custom rule.

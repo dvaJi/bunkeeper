@@ -17,3 +17,6 @@ jobs:
       - run: bun fmt --check
       - run: bun lint --no-script --max-warnings 0
       - run: bun test
+      - name: Package dry-run
+        working-directory: packages/bunkeeper
+        run: bun publish --dry-run

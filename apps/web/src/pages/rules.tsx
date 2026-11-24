@@ -32,7 +32,7 @@ const RULES: Rule[] = [
 import { config } from "dotenv";
 config();`,
     right: `console.log(Bun.env.API_KEY);`,
-    doc: "https://github.com/dvaJi/bunkeeper/blob/main/packages/bunkeeper/docs/rules/no-dotenv.md",
+    doc: "https://github.com/dvaJi/bunkeeper/blob/HEAD/packages/bunkeeper/docs/rules/no-dotenv.md",
     wrongMarks: [{ find: "dotenv/config", message: "Bun loads .env files automatically" }],
   },
   {
@@ -41,7 +41,7 @@ config();`,
     why: "Bun.env is the same variables, typed by bun-types, and honest about which runtime the code targets.",
     wrong: `const port = process.env.PORT;`,
     right: `const port = Bun.env.PORT;`,
-    doc: "https://github.com/dvaJi/bunkeeper/blob/main/packages/bunkeeper/docs/rules/no-process-env.md",
+    doc: "https://github.com/dvaJi/bunkeeper/blob/HEAD/packages/bunkeeper/docs/rules/no-process-env.md",
     wrongMarks: [{ find: "process.env", message: "Use Bun.env" }],
   },
   {
@@ -51,7 +51,7 @@ config();`,
     wrong: `import { readFileSync } from "node:fs";
 const text = readFileSync("config.toml", "utf8");`,
     right: `const text = await Bun.file("config.toml").text();`,
-    doc: "https://github.com/dvaJi/bunkeeper/blob/main/packages/bunkeeper/docs/rules/prefer-bun-file.md",
+    doc: "https://github.com/dvaJi/bunkeeper/blob/HEAD/packages/bunkeeper/docs/rules/prefer-bun-file.md",
     wrongMarks: [{ find: "readFileSync", occurrence: 1, message: "await Bun.file(path).text()" }],
   },
   {
@@ -61,7 +61,7 @@ const text = readFileSync("config.toml", "utf8");`,
     wrong: `import { writeFileSync } from "node:fs";
 writeFileSync("out.txt", data);`,
     right: `await Bun.write("out.txt", data);`,
-    doc: "https://github.com/dvaJi/bunkeeper/blob/main/packages/bunkeeper/docs/rules/prefer-bun-write.md",
+    doc: "https://github.com/dvaJi/bunkeeper/blob/HEAD/packages/bunkeeper/docs/rules/prefer-bun-write.md",
     wrongMarks: [{ find: "writeFileSync", message: "await Bun.write(path, data)" }],
   },
   {
@@ -71,7 +71,7 @@ writeFileSync("out.txt", data);`,
     wrong: `import fetch from "node-fetch";
 import { fetch, Headers } from "undici";`,
     right: `const res = await fetch("https://example.com");`,
-    doc: "https://github.com/dvaJi/bunkeeper/blob/main/packages/bunkeeper/docs/rules/no-node-fetch.md",
+    doc: "https://github.com/dvaJi/bunkeeper/blob/HEAD/packages/bunkeeper/docs/rules/no-node-fetch.md",
     wrongMarks: [{ find: "node-fetch", message: "fetch is a global in Bun" }],
   },
   {
@@ -80,7 +80,7 @@ import { fetch, Headers } from "undici";`,
     why: "The promise-wrapped setTimeout idiom collapses to one call. Autofixable, including non-literal durations.",
     wrong: `await new Promise((resolve) => setTimeout(resolve, 250));`,
     right: `await Bun.sleep(250);`,
-    doc: "https://github.com/dvaJi/bunkeeper/blob/main/packages/bunkeeper/docs/rules/prefer-bun-sleep.md",
+    doc: "https://github.com/dvaJi/bunkeeper/blob/HEAD/packages/bunkeeper/docs/rules/prefer-bun-sleep.md",
     wrongMarks: [{ find: "setTimeout", message: "Bun.sleep(250)" }],
   },
 ];

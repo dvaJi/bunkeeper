@@ -38,6 +38,7 @@
   },
   "files": [
     "configs",
+    "docs",
     "plugin",
     "src",
     "templates",

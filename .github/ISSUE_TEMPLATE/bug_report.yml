@@ -1,0 +1,55 @@
+name: Bug report
+description: Report something broken in bunkeeper
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: Thanks for taking the time to file a bug! Please fill in the details below.
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: Include the exact output of the bunkeeper command (and any lint/CI output).
+      placeholder: A concise description plus the full command output.
+    validations:
+      required: true
+  - type: textarea
+    id: repro
+    attributes:
+      label: Reproduction steps
+      description: Minimal steps to reproduce — a repo or gist link is even better.
+      placeholder: |
+        1. `bunx bunkeeper init`
+        2. Run `bun lint`
+        3. ...
+    validations:
+      required: true
+  - type: input
+    id: bun-version
+    attributes:
+      label: Bun version
+      description: Output of `bun --version` (canary vs stable matters — see the README requirements table).
+      placeholder: e.g. 1.4.6-canary.24
+    validations:
+      required: true
+  - type: dropdown
+    id: bun-channel
+    attributes:
+      label: Bun channel
+      options:
+        - canary
+        - stable
+    validations:
+      required: true
+  - type: input
+    id: os
+    attributes:
+      label: Operating system
+      placeholder: e.g. macOS 15, Windows 11, Ubuntu 24.04
+    validations:
+      required: true
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional context
+      description: Strict preset? `--type-aware`? Custom `.oxlintrc.json` overrides? Anything else relevant.
