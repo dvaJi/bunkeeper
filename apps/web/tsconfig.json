@@ -3,13 +3,12 @@
     "target": "ESNext",
     "module": "ESNext",
     "moduleResolution": "bundler",
-    "types": ["bun-types"],
+    "typeRoots": ["./node_modules/@types"],
     "strict": true,
     "verbatimModuleSyntax": true,
     "noEmit": true,
     "skipLibCheck": true,
     "jsx": "react-jsx",
-    "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"]
     }

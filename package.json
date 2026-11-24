@@ -1,6 +1,7 @@
 {
   "name": "bunkeeper-monorepo",
   "private": true,
+  "license": "MIT",
   "workspaces": [
     "packages/*",
     "apps/*"
@@ -15,5 +16,9 @@
     "web:dev": "bun --cwd apps/web dev",
     "web:build": "bun --cwd apps/web build",
     "web:deploy": "bun --cwd apps/web deploy"
+  },
+  "devDependencies": {
+    "@types/bun": "^1.4.5",
+    "bun-types": "^1.4.5"
   }
 }
