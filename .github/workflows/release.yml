@@ -44,7 +44,7 @@ jobs:
 
       - name: Package dry-run
         working-directory: packages/bunkeeper
-        run: bun publish --dry-run
+        run: bun pm pack --dry-run
 
       - uses: actions/setup-node@v4
         with:
