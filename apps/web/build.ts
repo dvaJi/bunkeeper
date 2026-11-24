@@ -1,15 +1,9 @@
-import { readdirSync, rmSync } from "node:fs";
+import { rmSync } from "node:fs"; // Bun has no recursive-delete API yet
 import { join } from "node:path";
 
 const outdir = "./dist";
 
-try {
-  for (const entry of readdirSync(outdir)) {
-    rmSync(join(outdir, entry), { recursive: true, force: true });
-  }
-} catch {
-  // first build, nothing to clean
-}
+rmSync(outdir, { recursive: true, force: true });
 
 const result = await Bun.build({
   entrypoints: ["./index.html"],

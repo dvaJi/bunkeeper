@@ -14,8 +14,8 @@ import {
 
 type Check = { label: string; status: "ok" | "warn" | "fail" | "skip"; detail?: string };
 
-function lintSupported() {
-  const result = probeLintSupport();
+async function lintSupported() {
+  const result = await probeLintSupport();
   const stderr = result.stderr.toString();
   if (result.exitCode === 0) return { supported: true };
   if (stderr.includes("Script not found"))
@@ -45,7 +45,7 @@ export async function doctor() {
     detail: version ? (version.canary ? "canary channel" : "stable channel") : "unparseable",
   });
 
-  const lint = lintSupported();
+  const lint = await lintSupported();
   checks.push({
     label: "bun lint",
     status: lint.supported ? "ok" : "warn",

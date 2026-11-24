@@ -1,7 +1,6 @@
 import { afterAll, beforeAll, describe, expect, setDefaultTimeout, test } from "bun:test";
-import { cpSync, mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
-import { tmpdir } from "node:os";
 import { join } from "node:path";
+import { makeTempDir, rmrf } from "../src/cli/util.ts";
 
 const REPO = join(import.meta.dir, "..");
 const CANARY = Bun.env.BUNKEEPER_BUN ?? "bun";
@@ -37,48 +36,61 @@ await Bun.sleep(250);
 const res = await fetch("https://example.com");
 `;
 
-beforeAll(() => {
-  fixture = mkdtempSync(join(globalThis.tmpdir ?? "/tmp", "bunkeeper-plugin-"));
-  mkdirSync(join(fixture, "node_modules"), { recursive: true });
-  cpSync(REPO, join(fixture, "node_modules", "bunkeeper"), {
-    recursive: true,
-    filter: (src) => !src.includes("node_modules") && !src.includes(".git"),
-  });
-  writeFileSync(
+beforeAll(async () => {
+  fixture = await makeTempDir("bunkeeper-plugin");
+  // copy only the files bun lint reads: the extends target and the plugin
+  await Bun.write(
+    join(fixture, "node_modules/bunkeeper/configs/recommended.json"),
+    Bun.file(join(REPO, "configs", "recommended.json")),
+  );
+  await Bun.write(
+    join(fixture, "node_modules/bunkeeper/configs/strict.json"),
+    Bun.file(join(REPO, "configs", "strict.json")),
+  );
+  await Bun.write(
+    join(fixture, "node_modules/bunkeeper/plugin/index.js"),
+    Bun.file(join(REPO, "plugin", "index.js")),
+  );
+  await Bun.write(
     join(fixture, ".oxlintrc.json"),
     JSON.stringify({ extends: ["./node_modules/bunkeeper/configs/recommended.json"] }, null, 2),
   );
-  writeFileSync(
+  await Bun.write(
     join(fixture, "bunfig.toml"),
     `[lint]\nplugins = ["./node_modules/bunkeeper/plugin/index.js"]\n\n[lint.rules]\n"bunkeeper/no-dotenv" = "error"\n"bunkeeper/no-process-env" = "warn"\n"bunkeeper/prefer-bun-file" = "warn"\n"bunkeeper/prefer-bun-write" = "warn"\n"bunkeeper/no-node-fetch" = "warn"\n"bunkeeper/prefer-bun-sleep" = "warn"\n`,
   );
-  mkdirSync(join(fixture, "src"), { recursive: true });
-  writeFileSync(join(fixture, "src", "violations.ts"), VIOLATIONS);
-  writeFileSync(join(fixture, "src", "clean.ts"), CLEAN);
+  await Bun.write(join(fixture, "src", "violations.ts"), VIOLATIONS);
+  await Bun.write(join(fixture, "src", "clean.ts"), CLEAN);
 });
 
-function lintSupported() {
-  const probeDir = mkdtempSync(join(tmpdir(), "bunkeeper-probe-"));
+async function lintSupported() {
+  const probeDir = await makeTempDir("bunkeeper-probe");
   try {
-    return (
+    const probe = () =>
       Bun.spawnSync([CANARY, "lint", "--explain", "prefer-const"], {
         cwd: probeDir,
         stdout: "pipe",
         stderr: "pipe",
-      }).exitCode === 0
-    );
+      });
+    let result = probe();
+    // retry once on non-zero: transient spawn failures under process storms
+    // look identical to "no linter" except for the Script not found signature
+    if (result.exitCode !== 0 && !result.stderr.toString().includes("Script not found")) {
+      result = probe();
+    }
+    return result.exitCode === 0;
   } finally {
-    rmSync(probeDir, { recursive: true, force: true });
+    rmrf(probeDir);
   }
 }
 
 afterAll(() => {
-  rmSync(fixture, { recursive: true, force: true });
+  rmrf(fixture);
 });
 
-describe("plugin rules under bun lint", () => {
-  const supported = lintSupported();
+const supported = await lintSupported();
 
+describe("plugin rules under bun lint", () => {
   if (!supported) {
     return;
   }
@@ -108,7 +120,7 @@ describe("plugin rules under bun lint", () => {
 
   test("--fix rewrites the sleep pattern", async () => {
     const sleepFile = join(fixture, "src", "sleep.ts");
-    writeFileSync(
+    await Bun.write(
       sleepFile,
       `export async function wait() {\n  await new Promise((resolve) => setTimeout(resolve, 100));\n}\n`,
     );

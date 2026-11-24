@@ -1,5 +1,4 @@
-import { mkdtempSync, rmSync } from "node:fs";
-import { tmpdir } from "node:os";
+import { rmSync } from "node:fs"; // Bun has no recursive-delete API yet — the only node:fs import in the CLI
 import { join } from "node:path";
 
 export const c = {
@@ -94,12 +93,33 @@ export function spawnBun(args: string[], cwd?: string) {
   });
 }
 
-export function probeLintSupport() {
-  const probeDir = mkdtempSync(join(tmpdir(), "bunkeeper-probe-"));
+export function tmpRoot(): string {
+  return Bun.env.TEMP ?? Bun.env.TMP ?? Bun.env.TMPDIR ?? "/tmp";
+}
+
+export async function makeTempDir(prefix: string): Promise<string> {
+  const dir = join(tmpRoot(), `${prefix}-${Date.now()}-${Math.random().toString(36).slice(2)}`);
+  await Bun.write(join(dir, ".keep"), "");
+  return dir;
+}
+
+export function rmrf(path: string) {
+  rmSync(path, { recursive: true, force: true });
+}
+
+export async function probeLintSupport() {
+  const probeDir = await makeTempDir("bunkeeper-probe");
   try {
-    return spawnBun(["lint", "--explain", "prefer-const"], probeDir);
+    const probe = () => spawnBun(["lint", "--explain", "prefer-const"], probeDir);
+    let result = probe();
+    // a failed probe can also be a transient spawn failure (Windows process
+    // storms); only "Script not found" means this bun build has no linter
+    if (result.exitCode !== 0 && !result.stderr.toString().includes("Script not found")) {
+      result = probe();
+    }
+    return result;
   } finally {
-    rmSync(probeDir, { recursive: true, force: true });
+    rmrf(probeDir);
   }
 }
 

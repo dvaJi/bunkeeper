@@ -1,6 +1,6 @@
 import { afterAll, beforeAll, describe, expect, setDefaultTimeout, test } from "bun:test";
-import { mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
+import { makeTempDir, rmrf } from "../src/cli/util.ts";
 
 const REPO = join(import.meta.dir, "..");
 const CANARY = Bun.env.BUNKEEPER_BUN ?? "bun";
@@ -13,17 +13,17 @@ function bun(args: string[], cwd: string) {
 
 let fixture: string;
 
-beforeAll(() => {
-  fixture = mkdtempSync(join(globalThis.tmpdir ?? "/tmp", "bunkeeper-init-"));
-  writeFileSync(
+beforeAll(async () => {
+  fixture = await makeTempDir("bunkeeper-init");
+  await Bun.write(
     join(fixture, "package.json"),
     `${JSON.stringify({ name: "fixture", version: "1.0.0" }, null, 2)}\n`,
   );
-  writeFileSync(join(fixture, "src.ts"), `export const x = 1;\n`);
+  await Bun.write(join(fixture, "src.ts"), `export const x = 1;\n`);
 });
 
 afterAll(() => {
-  rmSync(fixture, { recursive: true, force: true });
+  rmrf(fixture);
 });
 
 describe("bunkeeper init", () => {
