@@ -57,7 +57,7 @@ Security issues go through [SECURITY.md](SECURITY.md), not public issues.
 
 ## Releases (maintainers)
 
-Releases are tag-driven: pushing a `v*` tag triggers `.github/workflows/release.yml`, which verifies the tag matches `packages/bunkeeper/package.json` → `version`, runs the full check suite, publishes to npm with provenance, and creates a GitHub release with generated notes.
+Releases are tag-driven: pushing a `v*` tag triggers `.github/workflows/release.yml`, which verifies the tag matches `packages/bunkeeper/package.json` → `version`, runs the full check suite, publishes to npm with provenance, and creates a GitHub release with generated notes. The publish and release steps are idempotent — re-running a tag never double-publishes or double-releases.
 
 To cut a release:
 
@@ -69,6 +69,7 @@ To cut a release:
    git push origin v0.2.0
    ```
 
-One-time setup:
+One-time setup (done for 0.1.0, recorded here for reference):
 
-- Add an `NPM_TOKEN` repository secret (npm granular token scoped to `bunkeeper`, publish-only). Alternatively, configure [npm trusted publishing](https://docs.npmjs.com/trusted-publishers) for the package on npmjs.com (repo `dvaJi/bunkeeper`, workflow `release.yml`) — the workflow already sends provenance either way.
+- The very first version was published manually from a maintainer machine (`npm login`, then `npm publish --access public` in `packages/bunkeeper`), because npm trusted publishing requires the package to exist first.
+- Configure trusted publishing on npmjs.com: package `bunkeeper` → Settings → Trusted publisher → GitHub, owner `dvaJi`, repository `bunkeeper`, workflow filename `release.yml`, environment empty. After that, tags publish via OIDC — **no `NPM_TOKEN` secret is needed** (provenance is attached automatically).
