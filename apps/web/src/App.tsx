@@ -1,5 +1,16 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Search } from "lucide-react";
+import {
+  createMemoryHistory,
+  createRootRoute,
+  createRoute,
+  createRouter,
+  Link,
+  Outlet,
+  RouterProvider,
+  useNavigate,
+  type RouterHistory,
+} from "@tanstack/react-router";
 import { Button, ButtonLink } from "./components/forme/button/button";
 import {
   CommandMenu,
@@ -18,22 +29,12 @@ import {
   TooltipTrigger,
 } from "./components/forme/tooltip/tooltip";
 import { GitHubIcon } from "./icons";
-import { Link } from "./ui";
 import { Home } from "./pages/home";
 import { GettingStarted } from "./pages/getting-started";
 import { Presets } from "./pages/presets";
 import { Rules } from "./pages/rules";
 import { Agents } from "./pages/agents";
 import { CliPage } from "./pages/cli";
-
-const ROUTES: Record<string, () => React.JSX.Element> = {
-  "/": Home,
-  "/docs/getting-started": GettingStarted,
-  "/docs/presets": Presets,
-  "/docs/rules": Rules,
-  "/docs/agents": Agents,
-  "/docs/cli": CliPage,
-};
 
 const PAGES = [
   { to: "/", label: "Home" },
@@ -44,40 +45,28 @@ const PAGES = [
   { to: "/docs/cli", label: "CLI" },
 ];
 
-function useHashRoute() {
-  const [route, setRoute] = useState(() => window.location.hash.slice(1) || "/");
-  useEffect(() => {
-    const onChange = () => {
-      setRoute(window.location.hash.slice(1) || "/");
-      window.scrollTo(0, 0);
-    };
-    window.addEventListener("hashchange", onChange);
-    return () => window.removeEventListener("hashchange", onChange);
-  }, []);
-  return route;
-}
-
-function navigate(to: string) {
-  window.location.hash = to;
-}
-
-function Header({ route, onOpenMenu }: { route: string; onOpenMenu: () => void }) {
+function Header({ onOpenMenu }: { onOpenMenu: () => void }) {
   return (
     <header className="site-header">
       <div className="container header-inner">
-        <Link to="/" className="brand">
+        <Link
+          to="/"
+          className="brand"
+          activeOptions={{ exact: true }}
+          activeProps={{ className: "brand" }}
+        >
           bunkeeper
         </Link>
         <nav className="top-nav">
           {PAGES.slice(1).map((page) => (
-            <a
+            <Link
               key={page.to}
-              href={`#${page.to}`}
-              className={route === page.to ? "active" : undefined}
-              aria-current={route === page.to ? "page" : undefined}
+              to={page.to}
+              activeOptions={{ exact: true }}
+              activeProps={{ className: "active", "aria-current": "page" }}
             >
               {page.label}
-            </a>
+            </Link>
           ))}
           <Tooltip>
             <TooltipTrigger asChild>
@@ -116,17 +105,30 @@ function Footer() {
   );
 }
 
-export function App() {
-  const route = useHashRoute();
+function NotFound() {
+  return (
+    <div className="docs-layout">
+      <article className="docs-content">
+        <h1>404</h1>
+        <p className="lede">
+          This page does not exist. The <Link to="/">home page</Link> and the{" "}
+          <Link to="/docs/getting-started">docs</Link> are real, though.
+        </p>
+      </article>
+    </div>
+  );
+}
+
+function Shell() {
+  const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
-  const Page = ROUTES[route] ?? Home;
 
   return (
     <TooltipProvider>
       <div className="site">
-        <Header route={route} onOpenMenu={() => setMenuOpen(true)} />
+        <Header onOpenMenu={() => setMenuOpen(true)} />
         <main className="site-main container">
-          <Page />
+          <Outlet />
         </main>
         <Footer />
         <CommandMenu open={menuOpen} onOpenChange={setMenuOpen} label="Search docs">
@@ -138,7 +140,7 @@ export function App() {
                 <CommandMenuItem
                   key={page.to}
                   value={page.label}
-                  onSelect={() => navigate(page.to)}
+                  onSelect={() => navigate({ to: page.to })}
                 >
                   {page.label}
                 </CommandMenuItem>
@@ -148,13 +150,13 @@ export function App() {
             <CommandMenuGroup heading="Rules">
               <CommandMenuItem
                 value="Rules — all bunkeeper rules"
-                onSelect={() => navigate("/docs/rules")}
+                onSelect={() => navigate({ to: "/docs/rules" })}
               >
                 All bunkeeper rules
               </CommandMenuItem>
               <CommandMenuItem
                 value="Presets — recommended and strict"
-                onSelect={() => navigate("/docs/presets")}
+                onSelect={() => navigate({ to: "/docs/presets" })}
               >
                 Recommended and strict
               </CommandMenuItem>
@@ -173,4 +175,58 @@ export function App() {
       </div>
     </TooltipProvider>
   );
+}
+
+const rootRoute = createRootRoute({ component: Shell, notFoundComponent: NotFound });
+
+const indexRoute = createRoute({ getParentRoute: () => rootRoute, path: "/", component: Home });
+const gettingStartedRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/docs/getting-started",
+  component: GettingStarted,
+});
+const presetsRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/docs/presets",
+  component: Presets,
+});
+const rulesRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/docs/rules",
+  component: Rules,
+});
+const agentsRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/docs/agents",
+  component: Agents,
+});
+const cliRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/docs/cli",
+  component: CliPage,
+});
+
+const routeTree = rootRoute.addChildren([
+  indexRoute,
+  gettingStartedRoute,
+  presetsRoute,
+  rulesRoute,
+  agentsRoute,
+  cliRoute,
+]);
+
+export function createAppRouter(history?: RouterHistory) {
+  return createRouter({
+    routeTree,
+    history,
+    scrollRestoration: true,
+    defaultPreload: "intent",
+  });
+}
+
+let browserRouter: ReturnType<typeof createAppRouter> | undefined;
+
+export function App({ router }: { router?: ReturnType<typeof createAppRouter> }) {
+  browserRouter ??= createAppRouter();
+  return <RouterProvider router={router ?? browserRouter} />;
 }

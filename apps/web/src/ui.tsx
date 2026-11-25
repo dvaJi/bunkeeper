@@ -1,5 +1,6 @@
 import { useState, type ReactNode } from "react";
 import { Check, Copy, Info } from "lucide-react";
+import { Link } from "@tanstack/react-router";
 import { highlight, inferLanguage, lineDecorations, type LineSelection } from "./highlight";
 import { Button } from "./components/forme/button/button";
 import {
@@ -8,24 +9,6 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "./components/forme/tooltip/tooltip";
-
-export function Link({
-  to,
-  children,
-  className,
-  "aria-current": ariaCurrent,
-}: {
-  to: string;
-  children: ReactNode;
-  className?: string;
-  "aria-current"?: "page";
-}) {
-  return (
-    <a href={`#${to}`} className={className} aria-current={ariaCurrent}>
-      {children}
-    </a>
-  );
-}
 
 export function Code({ children }: { children: ReactNode }) {
   return <code className="inline-code">{children}</code>;
@@ -200,15 +183,15 @@ const NAV = [
 ];
 
 export function DocNav() {
-  const current = typeof window === "undefined" ? undefined : window.location.hash.slice(1) || "/";
   return (
     <nav className="doc-nav">
       {NAV.map((item) => (
         <Link
           key={item.to}
           to={item.to}
-          className={`doc-nav-link${current === item.to ? " active" : ""}`}
-          aria-current={current === item.to ? "page" : undefined}
+          className="doc-nav-link"
+          activeOptions={{ exact: true }}
+          activeProps={{ className: "doc-nav-link active", "aria-current": "page" }}
         >
           {item.label}
         </Link>

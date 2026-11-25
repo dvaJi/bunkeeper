@@ -1,4 +1,5 @@
-import { DocsPage, CodeBlock, Callout, Code, Link } from "../ui";
+import { Link } from "@tanstack/react-router";
+import { DocsPage, CodeBlock, Callout, Code } from "../ui";
 import { Badge } from "../components/forme/badge/badge";
 import { Card, CardContent, CardDescription, CardHeader } from "../components/forme/card/card";
 

@@ -1,4 +1,5 @@
-import { DocsPage, CodeBlock, Table, Callout, Code, Link } from "../ui";
+import { Link } from "@tanstack/react-router";
+import { DocsPage, CodeBlock, Table, Callout, Code } from "../ui";
 
 export function Presets() {
   return (

@@ -9,9 +9,10 @@ import {
   Stethoscope,
   Wheat,
 } from "lucide-react";
+import { Link } from "@tanstack/react-router";
 import { Terminal, Table } from "../ui";
 import { Demo } from "../demo";
-import { ButtonLink } from "../components/forme/button/button";
+import { Button, ButtonLink } from "../components/forme/button/button";
 import { GitHubIcon } from "../icons";
 
 export function Home() {
@@ -27,9 +28,11 @@ export function Home() {
             toolchain — bunkeeper makes it strict.
           </p>
           <div className="hero-actions">
-            <ButtonLink size="large" trailingIcon={ArrowRight} href="#/docs/getting-started">
-              Get started
-            </ButtonLink>
+            <Button asChild size="large">
+              <Link to="/docs/getting-started">
+                Get started <ArrowRight className="size-4" aria-hidden />
+              </Link>
+            </Button>
             <ButtonLink
               size="large"
               variant="secondary"
